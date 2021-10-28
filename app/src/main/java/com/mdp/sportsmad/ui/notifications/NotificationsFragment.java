@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.mdp.sportsmad.R;
 import com.mdp.sportsmad.databinding.FragmentNotificationsBinding;
 
 public class NotificationsFragment extends Fragment {
