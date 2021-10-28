@@ -49,10 +49,10 @@ public class SportCenterDetails extends AppCompatActivity {
             public void onClick(View view) {
                 Gson gson = new Gson();
                 String myJson = gson.toJson(sportCenter);
-                /*Intent i = new Intent(SportCenterDetails.this, com.mdp.sportsmad.MapsActivity.class);
+                Intent i = new Intent(SportCenterDetails.this, com.mdp.sportsmad.MapsActivity.class);
                 i.putExtra("sportCenter", myJson);
                 startActivity(i); //TODO add mapActivity class
-                */
+
             }
         });
         schedule= (TextView) findViewById(R.id.schedule);
