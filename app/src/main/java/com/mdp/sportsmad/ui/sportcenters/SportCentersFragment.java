@@ -122,7 +122,7 @@ public class SportCentersFragment extends Fragment {
                         generalList.add(sc);
                     }
                     recyclerViewAdapter.notifyDataSetChanged();
-                    binding.messageInfo.setText("");
+                    //binding.messageInfo.setText("");
                 }
             }
         };

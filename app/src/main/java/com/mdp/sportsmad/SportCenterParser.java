@@ -29,8 +29,11 @@ public class SportCenterParser {
                 JSONObject graph = graphs.getJSONObject(index);
                 int id=Integer.parseInt(graph.getString("id"));
                 String title=(String) graph.get("title");
-                String typeSplit[]=graph.getString("@type").split("/");
-                String type = typeSplit[typeSplit.length-1];
+                String type="Gimnasios";
+                if(graph.has("@type")) {
+                    String typeSplit[] = graph.getString("@type").split("/");
+                    type = typeSplit[typeSplit.length - 1];
+                }
                 String urlRelation=graph.getString("relation");
                 String street="";
                 if(graph.getJSONObject("address").has("street-address"))

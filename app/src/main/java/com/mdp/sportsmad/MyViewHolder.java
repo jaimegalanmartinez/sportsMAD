@@ -34,7 +34,8 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     void bindValues(com.mdp.sportsmad.model.SportCenter item) {
         // give values to the elements contained in the item view
         //Default values
-        title.setText("CDM"+item.getTitle().substring(26));
+
+        title.setText(item.getTitle());//"CDM"+item.getTitle().substring(26)
         street.setText(item.getStreet());
         type.setText(item.getType());
 
