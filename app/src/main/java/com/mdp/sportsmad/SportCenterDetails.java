@@ -1,15 +1,22 @@
 package com.mdp.sportsmad;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.ArraySet;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.Gson;
 import com.mdp.sportsmad.model.SportCenter;
+import com.mdp.sportsmad.model.SportCenterDataset;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class SportCenterDetails extends AppCompatActivity {
     private SportCenter sportCenter;
@@ -20,7 +27,7 @@ public class SportCenterDetails extends AppCompatActivity {
     private Button latLng;
     private TextView schedule;
     private TextView services;
-
+    private CheckBox favorite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +58,7 @@ public class SportCenterDetails extends AppCompatActivity {
                 String myJson = gson.toJson(sportCenter);
                 Intent i = new Intent(SportCenterDetails.this, com.mdp.sportsmad.MapsActivity.class);
                 i.putExtra("sportCenter", myJson);
-                startActivity(i); //TODO add mapActivity class
+                startActivity(i);
 
             }
         });
@@ -60,5 +67,36 @@ public class SportCenterDetails extends AppCompatActivity {
         services= (TextView) findViewById(R.id.services);
         services.setText(sportCenter.getServices());
 
+        favorite = (CheckBox) findViewById(R.id.favorite_details);
+        //If it is favourite, set checkbox
+        if( SportCenterDataset.getInstance().isFavourite(sportCenter.getId())){
+            favorite.setChecked(true);
+        }
+        favorite.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if(favorite.isChecked()){
+                    //Save this sport center as favourite
+                    SharedPreferences sharedPreferences = getSharedPreferences("favourites",MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
+                    favouritesSet.add(Integer.toString(sportCenter.getId()));
+                    editor.putStringSet("favourites",favouritesSet);
+                    editor.commit();
+                    SportCenterDataset spdataset = SportCenterDataset.getInstance();
+                    spdataset.addFavourite(sportCenter);
+                }else{
+                    SharedPreferences sharedPreferences = getSharedPreferences("favourites",MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
+                    favouritesSet.remove(Integer.toString(sportCenter.getId()));
+                    editor.putStringSet("favourites",favouritesSet);
+                    editor.commit();
+                    SportCenterDataset spdataset = SportCenterDataset.getInstance();
+                    spdataset.removeFavourite(sportCenter);
+                }
+
+            }
+        });
     }
 }

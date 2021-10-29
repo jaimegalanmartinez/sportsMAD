@@ -8,13 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.selection.ItemKeyProvider;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.selection.StorageStrategy;
@@ -25,10 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mdp.sportsmad.DownloadRunnable;
 import com.mdp.sportsmad.MyAdapter;
 
-import com.mdp.sportsmad.MyOnItemActivatedListener;
 import com.mdp.sportsmad.SportCenterParser;
 import com.mdp.sportsmad.databinding.FragmentSportsCentersBinding;
 import com.mdp.sportsmad.model.SportCenter;
+import com.mdp.sportsmad.model.SportCenterDataset;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +48,7 @@ public class SportCentersFragment extends Fragment {
     private SportCenterParser sportCenterParser = new SportCenterParser(getContext());
     private static final String URL_JSON = "https://datos.madrid.es/egob/catalogo/200186-0-polideportivos.json";
     private MyOnItemActivatedListener onItemActivatedListener;
-
+    //private SportCenterDataset SportCenterDataset;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         //sportCentersViewModel =
@@ -85,16 +82,15 @@ public class SportCentersFragment extends Fragment {
     }
 
     private void loadRecyclerView(){
-
         //recyclerView = findViewById(R.id.recyclerView);
         recyclerView = binding.recyclerView;
-        recyclerViewAdapter = new MyAdapter(getContext(), generalList);
+        recyclerViewAdapter = new MyAdapter(getContext(), SportCenterDataset.getInstance().getGeneralList());
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         //Layout
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         //Tracker
-        onItemActivatedListener = new MyOnItemActivatedListener(getContext(),generalList);
+        onItemActivatedListener = new MyOnItemActivatedListener(getContext(),SportCenterDataset.getInstance().getGeneralList());
         tracker = new SelectionTracker.Builder<>(
                 "my-selection-id",
                 recyclerView,
@@ -117,10 +113,7 @@ public class SportCentersFragment extends Fragment {
                 super.handleMessage(msg);
                 Log.d(logTag, "message received from background thread");
                 if(msg.getData().getBoolean("result")) {
-                    generalList.clear();
-                    for (SportCenter sc: sportCenterParser.getParse()) {
-                        generalList.add(sc);
-                    }
+                    SportCenterDataset.getInstance().setGeneralList(sportCenterParser.getParse());
                     recyclerViewAdapter.notifyDataSetChanged();
                     //binding.messageInfo.setText("");
                 }

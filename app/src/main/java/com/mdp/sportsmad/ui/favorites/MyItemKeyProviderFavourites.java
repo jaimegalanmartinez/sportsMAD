@@ -1,4 +1,4 @@
-package com.mdp.sportsmad.ui.sportcenters;
+package com.mdp.sportsmad.ui.favorites;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.selection.ItemKeyProvider;
 
-public class MyItemKeyProvider extends ItemKeyProvider<Long> {
+public class MyItemKeyProviderFavourites extends ItemKeyProvider<Long> {
     // We decide that out Keys will be of type Long
     // Options are:  Parcelable (and all subclasses like Uri), String, and Long
     // More info: https://developer.android.com/guide/topics/ui/layout/recyclerview-custom#select
@@ -20,7 +20,7 @@ public class MyItemKeyProvider extends ItemKeyProvider<Long> {
      * @param scope Scope can't be changed at runtime.
      */
     @SuppressLint("LongLogTag")
-    public MyItemKeyProvider(int scope) {
+    public MyItemKeyProviderFavourites(int scope) {
         super(scope);
         Log.d(TAG, "MyItemKeyProvider() called");
     }

@@ -1,4 +1,4 @@
-package com.mdp.sportsmad.ui.sportcenters;
+package com.mdp.sportsmad.ui.favorites;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -10,14 +10,14 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.widget.RecyclerView;
 
-public final class MyItemDetailsLookup extends ItemDetailsLookup<Long> {
+public final class MyItemDetailsLookupFavourites extends ItemDetailsLookup<Long> {
 
     private static final String TAG = "ListOfItems, MyItemDetailsLookup";
 
     private final RecyclerView mRecyclerView;
 
     @SuppressLint("LongLogTag")
-    public MyItemDetailsLookup(RecyclerView recyclerView) {
+    public MyItemDetailsLookupFavourites(RecyclerView recyclerView) {
         Log.d(TAG, "MyItemDetailsLookup() called");
         mRecyclerView = recyclerView;
     }

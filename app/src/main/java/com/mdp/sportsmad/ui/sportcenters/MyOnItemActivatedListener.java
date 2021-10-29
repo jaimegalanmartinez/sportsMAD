@@ -1,4 +1,4 @@
-package com.mdp.sportsmad;
+package com.mdp.sportsmad.ui.sportcenters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +11,7 @@ import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.selection.OnItemActivatedListener;
 
 import com.google.gson.Gson;
+import com.mdp.sportsmad.SportCenterDetails;
 
 import java.util.List;
 
