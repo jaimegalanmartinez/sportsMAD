@@ -69,7 +69,7 @@ public class SportCenterDetails extends AppCompatActivity {
 
         favorite = (CheckBox) findViewById(R.id.favorite_details);
         //If it is favourite, set checkbox
-        if( SportCenterDataset.getInstance().isFavourite(sportCenter.getId())){
+        if(SportCenterDataset.getInstance().isFavourite(sportCenter.getId())){
             favorite.setChecked(true);
         }
         favorite.setOnClickListener(new View.OnClickListener(){
@@ -77,23 +77,13 @@ public class SportCenterDetails extends AppCompatActivity {
             public void onClick(View view) {
                 if(favorite.isChecked()){
                     //Save this sport center as favourite
-                    SharedPreferences sharedPreferences = getSharedPreferences("favourites",MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
-                    favouritesSet.add(Integer.toString(sportCenter.getId()));
-                    editor.putStringSet("favourites",favouritesSet);
-                    editor.commit();
+
                     SportCenterDataset spdataset = SportCenterDataset.getInstance();
                     spdataset.addFavourite(sportCenter);
                 }else{
-                    SharedPreferences sharedPreferences = getSharedPreferences("favourites",MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
-                    favouritesSet.remove(Integer.toString(sportCenter.getId()));
-                    editor.putStringSet("favourites",favouritesSet);
-                    editor.commit();
+
                     SportCenterDataset spdataset = SportCenterDataset.getInstance();
-                    spdataset.removeFavourite(sportCenter);
+                    spdataset.removeFavourite(sportCenter.getId());
                 }
 
             }

@@ -17,7 +17,7 @@ public class SportCenterDataset {
     private List<SportCenter> favouriteList;
     private static SportCenterDataset instance=null;
     private Context c;
-    private SharedPreferences sharedPreferences;
+    private static SharedPreferences sharedPreferences;
     public SportCenterDataset(Context c){
         generalList = new ArrayList<>();
         favouriteList = new ArrayList<>();
@@ -27,6 +27,7 @@ public class SportCenterDataset {
     public static SportCenterDataset createInstance(Context c){
         if(instance==null){
             instance =new SportCenterDataset(c);
+            sharedPreferences = c.getSharedPreferences("favourites",MODE_PRIVATE);
         }
         return instance;
     }
@@ -35,29 +36,51 @@ public class SportCenterDataset {
         return instance;
 
     }
-    public void setGeneralList(List<SportCenter> generalList) {
-        this.generalList = generalList;
+    public void setGeneralList(List<SportCenter> generalListnew) {
+        this.generalList.clear();
+        for(SportCenter sp: generalListnew)
+            this.generalList.add(sp);
         updateFavourites();
     }
     public void updateFavourites(){
-        sharedPreferences = c.getSharedPreferences("favourites",MODE_PRIVATE);
+
         favouriteList.clear();
         Set<String> favouritesSet = sharedPreferences.getStringSet("favourites",new HashSet<>());
         for(String id:favouritesSet)
             favouriteList.add(findSPById(id));
 
     }
-    public void setFavouriteList(List<SportCenter> favouriteList) {
-        this.favouriteList = favouriteList;
+    public void setFavouriteList(List<SportCenter> favouriteListnew) {
+        this.favouriteList.clear();
+        for(SportCenter sp: favouriteListnew)
+            this.favouriteList.add(sp);
     }
     public List<SportCenter> getFavouriteList(){
         return favouriteList;
     }
     public void addFavourite(SportCenter sportCenter){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
+        favouritesSet.add(Integer.toString(sportCenter.getId()));
+        editor.putStringSet("favourites",favouritesSet);
+        editor.commit();
         favouriteList.add(sportCenter);
     }
-    public void removeFavourite(SportCenter sportCenter) {
-        favouriteList.remove(sportCenter);
+    public void removeFavourite(int id) {
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
+        favouritesSet.remove(Integer.toString(id));
+        editor.putStringSet("favourites",favouritesSet);
+        editor.commit();
+        SportCenter toRemove=null;
+        for(SportCenter sp1: favouriteList){
+            if(sp1.getId()==id){
+                toRemove=sp1;
+            }
+        }
+        if(toRemove!=null)
+            favouriteList.remove(toRemove);
     }
     public List<SportCenter> getGeneralList(){
         return generalList;
@@ -73,8 +96,21 @@ public class SportCenterDataset {
         return sp;
     }
     public boolean isFavourite(int id){
-        String str_id= Integer.toString(id);
-        SportCenter sp =findSPById(str_id);
-        return favouriteList.contains(sp);
+        boolean contains=false;
+        for(SportCenter sp1: favouriteList){
+            if(sp1.getId()==id)
+                contains=true;
+        }
+        return contains;
+    }
+    public void resetFavourites(){
+        favouriteList.clear();
+    }
+    public void removeAllFavourites(){
+        favouriteList.clear();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet("favourites",new HashSet<>() );
+        editor.commit();
+
     }
 }

@@ -74,8 +74,26 @@ public class FavoritesFragment extends Fragment {
     }
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("FavoritesFragment","reached onViewCreated()");
         loadRecyclerView();
-        loadSportCenters();
+        if(SportCenterDataset.getInstance().getGeneralList().size()==0)
+            loadSportCenters();
+    }
+    @Override
+    public void onResume() {
+        Log.d("FavoritesFragment","reached onResume()");
+        super.onResume();
+        //Reload
+        List<SportCenter> FavouriteList = SportCenterDataset.getInstance().getFavouriteList();
+
+        List<SportCenter> FavouriteListCopy= new ArrayList<SportCenter> ();
+        for (SportCenter sp: FavouriteList)
+            FavouriteListCopy.add(sp);
+        int FavouriteList_size=FavouriteList.size();
+        SportCenterDataset.getInstance().resetFavourites();
+        recyclerViewAdapter.notifyItemRangeRemoved(0,FavouriteList_size+1);
+        SportCenterDataset.getInstance().setFavouriteList(FavouriteListCopy);
+        recyclerViewAdapter.notifyItemRangeChanged(0,FavouriteListCopy.size());
     }
     @Override
     public void onDestroyView() {
@@ -83,7 +101,7 @@ public class FavoritesFragment extends Fragment {
         binding = null;
     }
     private void loadRecyclerView(){
-
+        Log.d("FavoritesFragment","reached loadRecyclerView()");
         //recyclerView = findViewById(R.id.recyclerView);
         recyclerView = binding.recyclerViewFavourites;
 
@@ -108,6 +126,7 @@ public class FavoritesFragment extends Fragment {
     }
     private void loadSportCenters(){
         //Handler to receive Sport Centers
+        Log.d("FavoritesFragment","reached loadSportCenters()");
         Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
@@ -119,7 +138,8 @@ public class FavoritesFragment extends Fragment {
                     //generalList.clear();
                     SportCenterDataset.getInstance().setGeneralList(sportCenterParser.getParse());
                     //Get Favouties
-                    recyclerViewAdapter.notifyDataSetChanged();
+
+                    recyclerViewAdapter.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getFavouriteList().size());
                     //binding.messageInfo.setText("");
                 }
             }

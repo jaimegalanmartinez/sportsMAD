@@ -71,8 +71,10 @@ public class SportCentersFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("SportCentersFragment","reached onViewCreated()");
         loadRecyclerView();
-        loadSportCenters();
+        if(SportCenterDataset.getInstance().getGeneralList().size()==0)
+            loadSportCenters();
     }
 
     @Override
@@ -82,6 +84,7 @@ public class SportCentersFragment extends Fragment {
     }
 
     private void loadRecyclerView(){
+        Log.d("SportCentersFragment","reached loadRecyclerView()");
         //recyclerView = findViewById(R.id.recyclerView);
         recyclerView = binding.recyclerView;
         recyclerViewAdapter = new MyAdapter(getContext(), SportCenterDataset.getInstance().getGeneralList());
@@ -105,6 +108,7 @@ public class SportCentersFragment extends Fragment {
     }
     private void loadSportCenters(){
         //Handler to receive Sport Centers
+        Log.d("SportCentersFragment","reached loadSportCenters()");
         Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(@NonNull Message msg) {
@@ -115,6 +119,7 @@ public class SportCentersFragment extends Fragment {
                 if(msg.getData().getBoolean("result")) {
                     SportCenterDataset.getInstance().setGeneralList(sportCenterParser.getParse());
                     recyclerViewAdapter.notifyDataSetChanged();
+                    recyclerViewAdapter.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getGeneralList().size());
                     //binding.messageInfo.setText("");
                 }
             }
