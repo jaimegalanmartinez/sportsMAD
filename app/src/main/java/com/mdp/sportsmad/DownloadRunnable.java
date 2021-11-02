@@ -80,8 +80,8 @@ public class DownloadRunnable implements Runnable{
                             actualContentType + " vs " + expectedContent_type;
                 }
                 urlConnection.disconnect();
-            } catch (Exception e) {
-                response = e.toString();
+            } catch (Exception e) {//Error at downloading
+                //response = e.toString();
             }
 
             Log.d(logTag, "load complete, sending message to UI thread");

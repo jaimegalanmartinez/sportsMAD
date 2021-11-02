@@ -151,13 +151,15 @@ public class NotificationsFragment extends Fragment {
         binding = null;
     }
     private void showMessageSnack(String message){
-        Snackbar.make(binding.recyclerViewNotifications, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        if(binding!=null)
+            Snackbar.make(binding.recyclerViewNotifications, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
     }
     private void addToHistory(String mainText) {
         System.out.println("LOG: " + mainText);
         mAdapter.add(mainText);
-        Snackbar.make(binding.recyclerViewNotifications, mainText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        if(binding!=null)
+            Snackbar.make(binding.recyclerViewNotifications, mainText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
     public void subscribeToTopic(String subscriptionTopic) {

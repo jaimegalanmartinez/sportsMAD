@@ -138,7 +138,7 @@ public class FavoritesFragment extends Fragment {
                     if(binding!=null)
                         binding.messageInfoFavourites.setText("");
                 }else{
-                    Snackbar.make(binding.recyclerViewFavourites, msg.getData().getByteArray("error").toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    Snackbar.make(binding.recyclerViewFavourites, msg.getData().getString("error"), Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
                     //Toast.makeText(getContext(),msg.getData().getByteArray("error").toString(),Toast.LENGTH_SHORT);
                 }

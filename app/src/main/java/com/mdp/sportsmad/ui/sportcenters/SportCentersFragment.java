@@ -126,10 +126,9 @@ public class SportCentersFragment extends Fragment {
                     if(binding!=null)
                         binding.messageInfo.setText("");
                 }else{
-                    Snackbar.make(binding.recyclerView, msg.getData().getByteArray("error").toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
+                    Snackbar.make(binding.recyclerView, msg.getData().getString("error"), Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     //Toast.makeText(getContext(),msg.getData().getByteArray("error").toString(),Toast.LENGTH_SHORT);
-            }
+                }
             }
         };
         Executor executor = Executors.newSingleThreadExecutor();
