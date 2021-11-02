@@ -1,4 +1,4 @@
-package com.mdp.sportsmad.model;
+package com.mdp.sportsmad.ui.favorites;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,6 +12,7 @@ import androidx.recyclerview.selection.OnItemActivatedListener;
 
 import com.google.gson.Gson;
 import com.mdp.sportsmad.SportCenterDetails;
+import com.mdp.sportsmad.model.SportCenter;
 
 import java.util.List;
 

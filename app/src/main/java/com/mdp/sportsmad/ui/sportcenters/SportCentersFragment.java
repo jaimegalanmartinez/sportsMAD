@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.mdp.sportsmad.DownloadRunnable;
 import com.mdp.sportsmad.MyAdapter;
 
@@ -75,6 +77,8 @@ public class SportCentersFragment extends Fragment {
         loadRecyclerView();
         if(SportCenterDataset.getInstance().getGeneralList().size()==0)
             loadSportCenters();
+        else
+            binding.messageInfo.setText("");
     }
 
     @Override
@@ -113,15 +117,19 @@ public class SportCentersFragment extends Fragment {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 // message received from background thread: load complete (or failure)
-                String string_result;
                 super.handleMessage(msg);
                 Log.d(logTag, "message received from background thread");
                 if(msg.getData().getBoolean("result")) {
                     SportCenterDataset.getInstance().setGeneralList(sportCenterParser.getParse());
-                    recyclerViewAdapter.notifyDataSetChanged();
+                    //recyclerViewAdapter.notifyDataSetChanged();
                     recyclerViewAdapter.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getGeneralList().size());
-                    //binding.messageInfo.setText("");
-                }
+                    if(binding!=null)
+                        binding.messageInfo.setText("");
+                }else{
+                    Snackbar.make(binding.recyclerView, msg.getData().getByteArray("error").toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+                    //Toast.makeText(getContext(),msg.getData().getByteArray("error").toString(),Toast.LENGTH_SHORT);
+            }
             }
         };
         Executor executor = Executors.newSingleThreadExecutor();

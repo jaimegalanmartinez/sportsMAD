@@ -90,10 +90,13 @@ public class DownloadRunnable implements Runnable{
             Log.d(logTag, "parsing complete, sending message ok to UI thread");
             if ("".equals(response) == false) {
                 msg_data.putBoolean("result", true);
+            }else{
+                msg_data.putBoolean("result", false);
+                msg_data.putString("error","Content received is empty");
             }
         }catch (Exception e){
             msg_data.putBoolean("result", false);
-            msg_data.putString("error", e.toString());
+            msg_data.putString("error", "Error at downloading");
         }
         msg.sendToTarget();
     }
