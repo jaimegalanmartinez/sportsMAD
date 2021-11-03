@@ -11,12 +11,8 @@ import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.selection.OnItemActivatedListener;
 
 import com.google.gson.Gson;
-<<<<<<< HEAD:app/src/main/java/com/mdp/sportsmad/model/MyOnItemActivatedListenerFavourites.java
 import com.mdp.sportsmad.SportCenterDetailsActivity;
-=======
-import com.mdp.sportsmad.SportCenterDetails;
 import com.mdp.sportsmad.model.SportCenter;
->>>>>>> 03362086a8bcaac98c087a22a548003ecdee2f15:app/src/main/java/com/mdp/sportsmad/ui/favorites/MyOnItemActivatedListenerFavourites.java
 
 import java.util.List;
 
