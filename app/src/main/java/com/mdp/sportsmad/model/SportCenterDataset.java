@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.android.gms.common.util.CollectionUtils;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,12 +16,14 @@ import java.util.Set;
 public class SportCenterDataset {
     private List<SportCenter> generalList;
     private List<SportCenter> favouriteList;
+    private List<SportCenterNotification> notificationList;
     private static SportCenterDataset instance=null;
     private Context c;
     private static SharedPreferences sharedPreferences;
     public SportCenterDataset(Context c){
         generalList = new ArrayList<>();
         favouriteList = new ArrayList<>();
+        notificationList = new ArrayList<>();
         this.c=c;
         instance=this;
     }
@@ -122,7 +125,7 @@ public class SportCenterDataset {
      * @param id of the sport center to search
      * @return sport center that matches or null otherwise
      */
-    private SportCenter findSPById(String id){
+    public SportCenter findSPById(String id){
         SportCenter sp=null;
         for(SportCenter spg: generalList){
             if(spg.getId()==Integer.parseInt(id)){
@@ -163,6 +166,60 @@ public class SportCenterDataset {
         favouriteList.clear();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet("favourites",new HashSet<>() );
+        editor.commit();
+    }
+    /**
+     * Adds a sport center in favouriteList and in disk.
+     * @param sportCenterNotification to add
+     */
+    public void addNotification(SportCenterNotification sportCenterNotification){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> favouritesSet =sharedPreferences.getStringSet("notifications",new HashSet<>());
+        Gson gson =new Gson();
+        favouritesSet.add(gson.toJson(sportCenterNotification));
+        editor.putStringSet("notifications",favouritesSet);
+        editor.commit();
+        notificationList.add(sportCenterNotification);
+    }
+
+    /**
+     * Deletes a sport center in favouriteList and in disk.
+     * @param id identifier to remove that sport center
+     */
+    public void removeNotification(int id) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> notificationsSet =sharedPreferences.getStringSet("notifications",new HashSet<>());
+        Gson gson =new Gson();
+        SportCenterNotification toRemove=null;
+        for(String i: notificationsSet){
+            SportCenterNotification temp = gson.fromJson(i,SportCenterNotification.class);
+            if(temp.getId()==id)
+                toRemove=temp;
+        }
+        if(toRemove!=null) {
+            notificationsSet.remove(gson.toJson(toRemove));
+            editor.putStringSet("notifications", notificationsSet);
+            editor.commit();
+
+            notificationList.remove(toRemove);
+        }
+    }
+    public SportCenterNotification getSportCenterNotificationById(int id){
+        SportCenterNotification scnElement = null;
+        Gson gson =new Gson();
+        for(SportCenterNotification i: notificationList){
+            if(i.getId()==id)
+                scnElement=i;
+        }
+        return scnElement;
+    }
+    public List<SportCenterNotification> getNotificationList(){
+        return notificationList;
+    }
+    public void removeNotificationList(){
+        notificationList.clear();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet("notifications",new HashSet<>() );
         editor.commit();
     }
 }

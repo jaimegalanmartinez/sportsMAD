@@ -1,15 +1,21 @@
 package com.mdp.sportsmad.ui.notifications;
 
+import android.content.Intent;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.selection.ItemKeyProvider;
+import androidx.recyclerview.selection.SelectionTracker;
+import androidx.recyclerview.selection.StorageStrategy;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +23,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.mdp.sportsmad.databinding.FragmentNotificationsBinding;
 import com.mdp.sportsmad.model.SportCenter;
 import com.mdp.sportsmad.model.SportCenterDataset;
+import com.mdp.sportsmad.model.SportCenterNotification;
+import com.mdp.sportsmad.ui.sportcenters.MyItemDetailsLookup;
+import com.mdp.sportsmad.ui.sportcenters.MyItemKeyProvider;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -30,7 +39,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 
 public class NotificationsFragment extends Fragment {
 
@@ -43,8 +54,11 @@ public class NotificationsFragment extends Fragment {
     String publishMessage = "Hello World!";
     MqttAndroidClient mqttAndroidClient;
     String clientId = "ExampleAndroidClient";
-    private HistoryAdapter mAdapter;
 
+    private SelectionTracker tracker;
+    private MyAdapterNotifications adapterNotifications;
+    private MyOnItemActivatedListenerNotifications onItemActivatedListener;
+    RecyclerView mRecyclerView;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         /*notificationsViewModel =
@@ -65,12 +79,32 @@ public class NotificationsFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d("NotificationsFragment","reached onViewCreated()");
-        RecyclerView mRecyclerView = binding.recyclerViewNotifications;
+        mRecyclerView = binding.recyclerViewNotifications;
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new HistoryAdapter(new ArrayList<>());
-        mRecyclerView.setAdapter(mAdapter);
+        adapterNotifications = new MyAdapterNotifications(getContext(),SportCenterDataset.getInstance().getNotificationList());
+        mRecyclerView.setAdapter(adapterNotifications);
+        onItemActivatedListener = new MyOnItemActivatedListenerNotifications(getContext(),null);
+        tracker = new SelectionTracker.Builder<>(
+                "my-selection-id",
+                mRecyclerView,
+                new MyItemKeyProvider(ItemKeyProvider.SCOPE_MAPPED),
+//                new StableIdKeyProvider(recyclerView), // This caused the app to crash on long clicks
+                new MyItemDetailsLookup(mRecyclerView),
+                StorageStrategy.createLongStorage())
+                .withOnItemActivatedListener(onItemActivatedListener)
+                .build();
+        adapterNotifications.setSelectionTracker(tracker);
+
+        //Buttons
+        Button clearAllButton = binding.clearAll;
+        clearAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAllSelection();
+            }
+        });
 
         clientId = clientId + System.currentTimeMillis();
 
@@ -97,8 +131,10 @@ public class NotificationsFragment extends Fragment {
             }
 
             @Override
-            public void messageArrived(String topic, MqttMessage message) {//TODO
-                addToHistory("Incoming message: " + new String(message.getPayload()));
+            public void messageArrived(String topic, MqttMessage message) {
+                String id = topic.split("/")[1];
+                SportCenterNotification scn = new SportCenterNotification(Integer.parseInt(id),SportCenterDataset.getInstance().findSPById(id).getTitle(),new String(message.getPayload()));
+                addToHistory(scn);
             }
 
             @Override
@@ -134,7 +170,7 @@ public class NotificationsFragment extends Fragment {
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    addToHistory("Failed to connect to: " + serverUri +
+                    showMessageSnack("Failed to connect to: " + serverUri +
                             ". Cause: " + ((exception.getCause() == null)?
                             exception.toString() : exception.getCause()));
 
@@ -142,12 +178,20 @@ public class NotificationsFragment extends Fragment {
             });
         } catch (MqttException e) {
             e.printStackTrace();
-            addToHistory(e.toString());
+            showMessageSnack(e.toString());
         }
     }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        for(SportCenter sportCenter : SportCenterDataset.getInstance().getFavouriteList()){
+            try {
+                mqttAndroidClient.unsubscribe("notifications/"+sportCenter.getId());
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
+
         binding = null;
     }
     private void showMessageSnack(String message){
@@ -155,11 +199,14 @@ public class NotificationsFragment extends Fragment {
             Snackbar.make(binding.recyclerViewNotifications, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
 
     }
-    private void addToHistory(String mainText) {
-        System.out.println("LOG: " + mainText);
-        mAdapter.add(mainText);
+    private void addToHistory(SportCenterNotification sportCenterNotification) {
+        System.out.println("LOG: " + sportCenterNotification);
+        SportCenterDataset.getInstance().addNotification(sportCenterNotification);
+        adapterNotifications.notifyDataSetChanged();
+        adapterNotifications.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getNotificationList().size()-1);
+/*
         if(binding!=null)
-            Snackbar.make(binding.recyclerViewNotifications, mainText, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            Snackbar.make(binding.recyclerViewNotifications, mainText, Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
     }
 
     public void subscribeToTopic(String subscriptionTopic) {
@@ -178,7 +225,7 @@ public class NotificationsFragment extends Fragment {
             });
         } catch (MqttException e) {
             e.printStackTrace();
-            addToHistory(e.toString());
+            showMessageSnack(e.toString());
         }
 
     }
@@ -192,14 +239,43 @@ public class NotificationsFragment extends Fragment {
         message.setQos(0);
         try {
             mqttAndroidClient.publish(publishTopic, message);
-            addToHistory("Message Published");
+            showMessageSnack("Message Published");
         } catch (Exception e) {
             e.printStackTrace();
-            addToHistory(e.toString());
+            showMessageSnack(e.toString());
         }
         if (!mqttAndroidClient.isConnected()) {
-            addToHistory("Client not connected!");
+            showMessageSnack("Client not connected!");
         }
+    }
+    /*public void (){
+        Iterator iterator = tracker.getSelection().iterator();
+        //Get setected items
+        ArrayList<Integer> listSelected= new ArrayList<Integer>();
+        while (iterator.hasNext()){
+            listSelected.add(Integer.parseInt(iterator.next().toString()));
+        }
+        //Order items
+        Collections.sort(listSelected);
+        Collections.reverse(listSelected);
+
+        for (Integer i: listSelected) {
+            //Delete in database
+            SportCenterDataset spd =SportCenterDataset.getInstance();
+            spd.removeNotification(spd.getNotificationList().get(i.intValue()).getId());
+            //delete in RecyclerView
+            mRecyclerView.getAdapter().notifyItemRemoved(i.intValue());
+            mRecyclerView.getAdapter().notifyItemRangeChanged(i.intValue(),spd.getNotificationList().size());
+        }
+        //Clear all selected items
+        tracker.clearSelection();
+    }*/
+    public void deleteAllSelection() {
+        SportCenterDataset spd =SportCenterDataset.getInstance();
+        int size = spd.getNotificationList().size();
+        spd.removeNotificationList();
+        mRecyclerView.getAdapter().notifyDataSetChanged();
+        mRecyclerView.getAdapter().notifyItemRangeRemoved(0,size);
     }
 }
 

@@ -27,7 +27,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         context = ctxt;
         title = itemView.findViewById(R.id.title);
         street = itemView.findViewById(R.id.street);
-        type = itemView.findViewById(R.id.type);
+        type = itemView.findViewById(R.id.description);
         imageType = itemView.findViewById(R.id.imageView);
     }
 
