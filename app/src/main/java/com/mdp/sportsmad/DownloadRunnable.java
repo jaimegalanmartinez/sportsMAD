@@ -80,8 +80,8 @@ public class DownloadRunnable implements Runnable{
                             actualContentType + " vs " + expectedContent_type;
                 }
                 urlConnection.disconnect();
-            } catch (Exception e) {
-                response = e.toString();
+            } catch (Exception e) {//Error at downloading
+                //response = e.toString();
             }
 
             Log.d(logTag, "load complete, sending message to UI thread");
@@ -90,10 +90,13 @@ public class DownloadRunnable implements Runnable{
             Log.d(logTag, "parsing complete, sending message ok to UI thread");
             if ("".equals(response) == false) {
                 msg_data.putBoolean("result", true);
+            }else{
+                msg_data.putBoolean("result", false);
+                msg_data.putString("error","Content received is empty");
             }
         }catch (Exception e){
             msg_data.putBoolean("result", false);
-            msg_data.putString("error", e.toString());
+            msg_data.putString("error", "Error at downloading");
         }
         msg.sendToTarget();
     }

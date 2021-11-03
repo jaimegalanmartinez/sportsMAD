@@ -1,6 +1,5 @@
 package com.mdp.sportsmad.ui.favorites;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,23 +20,18 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.mdp.sportsmad.DownloadRunnable;
 import com.mdp.sportsmad.MyAdapter;
-import com.mdp.sportsmad.model.MyOnItemActivatedListenerFavourites;
 import com.mdp.sportsmad.model.SportCenterDataset;
-import com.mdp.sportsmad.ui.sportcenters.MyOnItemActivatedListener;
 import com.mdp.sportsmad.SportCenterParser;
 import com.mdp.sportsmad.databinding.FragmentFavoritesBinding;
 import com.mdp.sportsmad.model.SportCenter;
-import com.mdp.sportsmad.ui.sportcenters.MyItemDetailsLookup;
-import com.mdp.sportsmad.ui.sportcenters.MyItemKeyProvider;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -78,20 +73,23 @@ public class FavoritesFragment extends Fragment {
         loadRecyclerView();
         if(SportCenterDataset.getInstance().getGeneralList().size()==0)
             loadSportCenters();
+        else
+            binding.messageInfoFavourites.setText("");
     }
     @Override
     public void onResume() {
         Log.d("FavoritesFragment","reached onResume()");
         super.onResume();
-        //Reload
+        //Reload teh dataset
         List<SportCenter> FavouriteList = SportCenterDataset.getInstance().getFavouriteList();
-
-        List<SportCenter> FavouriteListCopy= new ArrayList<SportCenter> ();
+        List<SportCenter> FavouriteListCopy= new ArrayList<SportCenter> ();//Create a copy
         for (SportCenter sp: FavouriteList)
             FavouriteListCopy.add(sp);
         int FavouriteList_size=FavouriteList.size();
+        //reset the previous dataset
         SportCenterDataset.getInstance().resetFavourites();
         recyclerViewAdapter.notifyItemRangeRemoved(0,FavouriteList_size+1);
+        //Update totally to the new one
         SportCenterDataset.getInstance().setFavouriteList(FavouriteListCopy);
         recyclerViewAdapter.notifyItemRangeChanged(0,FavouriteListCopy.size());
     }
@@ -131,16 +129,18 @@ public class FavoritesFragment extends Fragment {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 // message received from background thread: load complete (or failure)
-                String string_result;
                 super.handleMessage(msg);
                 Log.d(logTag, "message received from background thread");
                 if(msg.getData().getBoolean("result")) {
-                    //generalList.clear();
                     SportCenterDataset.getInstance().setGeneralList(sportCenterParser.getParse());
                     //Get Favouties
-
                     recyclerViewAdapter.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getFavouriteList().size());
-                    //binding.messageInfo.setText("");
+                    if(binding!=null)
+                        binding.messageInfoFavourites.setText("");
+                }else{
+                    Snackbar.make(binding.recyclerViewFavourites, msg.getData().getString("error"), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+                    //Toast.makeText(getContext(),msg.getData().getByteArray("error").toString(),Toast.LENGTH_SHORT);
                 }
             }
         };
