@@ -1,10 +1,8 @@
 package com.mdp.sportsmad;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.ArraySet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,10 +13,7 @@ import com.google.gson.Gson;
 import com.mdp.sportsmad.model.SportCenter;
 import com.mdp.sportsmad.model.SportCenterDataset;
 
-import java.util.HashSet;
-import java.util.Set;
-
-public class SportCenterDetails extends AppCompatActivity {
+public class SportCenterDetailsActivity extends AppCompatActivity {
     private SportCenter sportCenter;
     private TextView title;
     private TextView type;
@@ -56,7 +51,7 @@ public class SportCenterDetails extends AppCompatActivity {
             public void onClick(View view) {
                 Gson gson = new Gson();
                 String myJson = gson.toJson(sportCenter);
-                Intent i = new Intent(SportCenterDetails.this, com.mdp.sportsmad.MapsActivity.class);
+                Intent i = new Intent(SportCenterDetailsActivity.this, com.mdp.sportsmad.MapsActivity.class);
                 i.putExtra("sportCenter", myJson);
                 startActivity(i);
 

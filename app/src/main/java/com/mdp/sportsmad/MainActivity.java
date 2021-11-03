@@ -4,14 +4,21 @@ import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.mdp.sportsmad.databinding.ActivityMainBinding;
 import com.mdp.sportsmad.model.SportCenterDataset;
+
+import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,5 +43,6 @@ public class MainActivity extends AppCompatActivity {
         SportCenterDataset.createInstance(this);//Initialize
         SportCenterDataset.getInstance().removeAllFavourites();//TODO: Remove on final version
     }
+
 
 }
