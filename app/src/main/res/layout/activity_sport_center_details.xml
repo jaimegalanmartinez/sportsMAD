@@ -5,20 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SportCenterDetails">
     tools:context=".SportCenterDetailsActivity">
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/Sport_center_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Sport center"
-        android:textSize="48sp" />
 
     <LinearLayout
         android:id="@+id/all_parameters"
@@ -295,6 +287,6 @@
             android:layout_gravity="center"
             android:text="Send"
             android:textSize="24sp" />
-
+    </LinearLayout>
     </LinearLayout>
 </ScrollView>

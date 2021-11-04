@@ -32,7 +32,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SportCenterDetails extends AppCompatActivity {
 public class SportCenterDetailsActivity extends AppCompatActivity {
     private SportCenter sportCenter;
     private TextView title;
