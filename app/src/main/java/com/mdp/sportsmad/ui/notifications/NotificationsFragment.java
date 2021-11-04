@@ -13,6 +13,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.selection.ItemKeyProvider;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.selection.StorageStrategy;
@@ -20,6 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.mdp.sportsmad.AsyncManager;
+import com.mdp.sportsmad.CheckerRunnable;
 import com.mdp.sportsmad.databinding.FragmentNotificationsBinding;
 import com.mdp.sportsmad.model.SportCenter;
 import com.mdp.sportsmad.model.SportCenterDataset;
@@ -42,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 public class NotificationsFragment extends Fragment {
 
@@ -79,6 +84,69 @@ public class NotificationsFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d("NotificationsFragment","reached onViewCreated()");
+        loadRecyclerView();
+        loadMQTT();
+        //Buttons
+        Button clearAllButton = binding.clearAll;
+        clearAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAllSelection();
+            }
+        });
+        if(SportCenterDataset.getInstance().getGeneralList().size()==0)
+            loadSportCenters();
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        for(SportCenter sportCenter : SportCenterDataset.getInstance().getFavouriteList()){
+            try {
+                mqttAndroidClient.unsubscribe("notifications/"+sportCenter.getId());
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
+
+        binding = null;
+    }
+    private void showMessageSnack(String message){
+        if(binding!=null)
+            Snackbar.make(binding.recyclerViewNotifications, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
+    private void addToHistory(SportCenterNotification sportCenterNotification) {
+        System.out.println("LOG: " + sportCenterNotification);
+        SportCenterDataset.getInstance().addNotification(sportCenterNotification);
+        adapterNotifications.notifyDataSetChanged();
+        adapterNotifications.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getNotificationList().size()-1);
+/*
+        if(binding!=null)
+            Snackbar.make(binding.recyclerViewNotifications, mainText, Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
+    }
+
+    public void subscribeToTopic(String subscriptionTopic) {
+        try {
+
+            mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    showMessageSnack("Subscribed to: " + subscriptionTopic);
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    showMessageSnack("Failed to subscribe to: " + subscriptionTopic);
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+            showMessageSnack(e.toString());
+        }
+
+    }
+
+
+    private void loadRecyclerView(){
         mRecyclerView = binding.recyclerViewNotifications;
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -96,15 +164,8 @@ public class NotificationsFragment extends Fragment {
                 .withOnItemActivatedListener(onItemActivatedListener)
                 .build();
         adapterNotifications.setSelectionTracker(tracker);
-
-        //Buttons
-        Button clearAllButton = binding.clearAll;
-        clearAllButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteAllSelection();
-            }
-        });
+    }
+    private void loadMQTT(){
 
         clientId = clientId + System.currentTimeMillis();
 
@@ -181,72 +242,29 @@ public class NotificationsFragment extends Fragment {
             showMessageSnack(e.toString());
         }
     }
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        for(SportCenter sportCenter : SportCenterDataset.getInstance().getFavouriteList()){
-            try {
-                mqttAndroidClient.unsubscribe("notifications/"+sportCenter.getId());
-            } catch (MqttException e) {
-                e.printStackTrace();
+    private void loadSportCenters(){
+        final AsyncManager asyncManager = new ViewModelProvider(this).get(AsyncManager.class);
+        //Observer
+        final Observer progressObserver = new Observer<List<SportCenter>>(){
+            @Override
+            public void onChanged(List<SportCenter> sportCenterList){
+                //Update UI elements
+                Log.d("NotificationFargment", "Message Received with size = " + sportCenterList.size());
+                adapterNotifications.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getFavouriteList().size());
+                /*if(binding!=null)
+                    binding.messageInfoFavourites.setText("");*/
             }
-        }
-
-        binding = null;
+        };
+        //Create the observation with the previous observers:
+        asyncManager.getProgress().observe(getViewLifecycleOwner(),progressObserver);
+        asyncManager.launchBackgroundTask(new CheckerRunnable());
     }
-    private void showMessageSnack(String message){
-        if(binding!=null)
-            Snackbar.make(binding.recyclerViewNotifications, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
-    }
-    private void addToHistory(SportCenterNotification sportCenterNotification) {
-        System.out.println("LOG: " + sportCenterNotification);
-        SportCenterDataset.getInstance().addNotification(sportCenterNotification);
-        adapterNotifications.notifyDataSetChanged();
-        adapterNotifications.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getNotificationList().size()-1);
-/*
-        if(binding!=null)
-            Snackbar.make(binding.recyclerViewNotifications, mainText, Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
-    }
-
-    public void subscribeToTopic(String subscriptionTopic) {
-        try {
-
-            mqttAndroidClient.subscribe(subscriptionTopic, 0, null, new IMqttActionListener() {
-                @Override
-                public void onSuccess(IMqttToken asyncActionToken) {
-                    showMessageSnack("Subscribed to: " + subscriptionTopic);
-                }
-
-                @Override
-                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    showMessageSnack("Failed to subscribe to: " + subscriptionTopic);
-                }
-            });
-        } catch (MqttException e) {
-            e.printStackTrace();
-            showMessageSnack(e.toString());
-        }
-
-    }
-
-    public void publishMessage() {
-        MqttMessage message = new MqttMessage();
-        Date date= new Date();
-        publishMessage=date.toString();
-        message.setPayload(publishMessage.getBytes());
-        message.setRetained(false);
-        message.setQos(0);
-        try {
-            mqttAndroidClient.publish(publishTopic, message);
-            showMessageSnack("Message Published");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showMessageSnack(e.toString());
-        }
-        if (!mqttAndroidClient.isConnected()) {
-            showMessageSnack("Client not connected!");
-        }
+    public void deleteAllSelection() {
+        SportCenterDataset spd =SportCenterDataset.getInstance();
+        int size = spd.getNotificationList().size();
+        spd.removeNotificationList();
+        mRecyclerView.getAdapter().notifyDataSetChanged();
+        mRecyclerView.getAdapter().notifyItemRangeRemoved(0,size);
     }
     /*public void (){
         Iterator iterator = tracker.getSelection().iterator();
@@ -270,12 +288,6 @@ public class NotificationsFragment extends Fragment {
         //Clear all selected items
         tracker.clearSelection();
     }*/
-    public void deleteAllSelection() {
-        SportCenterDataset spd =SportCenterDataset.getInstance();
-        int size = spd.getNotificationList().size();
-        spd.removeNotificationList();
-        mRecyclerView.getAdapter().notifyDataSetChanged();
-        mRecyclerView.getAdapter().notifyItemRangeRemoved(0,size);
-    }
+
 }
 

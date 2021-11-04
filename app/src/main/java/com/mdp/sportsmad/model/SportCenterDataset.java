@@ -5,8 +5,13 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStore;
+import androidx.lifecycle.ViewModelStoreOwner;
+
 import com.google.android.gms.common.util.CollectionUtils;
 import com.google.gson.Gson;
+import com.mdp.sportsmad.AsyncManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,22 +25,27 @@ public class SportCenterDataset {
     private static SportCenterDataset instance=null;
     private Context c;
     private static SharedPreferences sharedPreferences;
-    public SportCenterDataset(Context c){
+    private  ViewModelStoreOwner vm;
+    private boolean filled;
+    public SportCenterDataset(Context c,ViewModelStoreOwner vm){
         generalList = new ArrayList<>();
         favouriteList = new ArrayList<>();
         notificationList = new ArrayList<>();
         this.c=c;
         instance=this;
+        filled=false;
+        this.vm=vm;
     }
 
     /**
      * Creates an instance on this class and configures the getSharedPreferences store option.
      * @param c context of the application
+     * @param viewModelStore
      * @return returns the instance created
      */
-    public static SportCenterDataset createInstance(Context c){
+    public static SportCenterDataset createInstance(Context c, ViewModelStoreOwner viewModelStore){
         if(instance==null){
-            instance =new SportCenterDataset(c);
+            instance =new SportCenterDataset(c,viewModelStore);
             sharedPreferences = c.getSharedPreferences("favourites",MODE_PRIVATE);
         }
         return instance;
@@ -58,6 +68,9 @@ public class SportCenterDataset {
         for(SportCenter sp: generalListnew)
             this.generalList.add(sp);
         updateFavourites();
+        filled=true;
+        final AsyncManager asyncManager = new ViewModelProvider(vm).get(AsyncManager.class);
+        asyncManager.setSportCentersGeneral(generalList);
     }
 
     /**
@@ -221,5 +234,8 @@ public class SportCenterDataset {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet("notifications",new HashSet<>() );
         editor.commit();
+    }
+    public boolean getFilled(){
+        return filled;
     }
 }

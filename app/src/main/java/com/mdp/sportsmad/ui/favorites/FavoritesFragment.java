@@ -13,6 +13,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.selection.ItemKeyProvider;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.selection.StorageStrategy;
@@ -21,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.mdp.sportsmad.AsyncManager;
+import com.mdp.sportsmad.CheckerRunnable;
 import com.mdp.sportsmad.DownloadRunnable;
 import com.mdp.sportsmad.MyAdapter;
 import com.mdp.sportsmad.model.SportCenterDataset;
@@ -45,9 +49,7 @@ public class FavoritesFragment extends Fragment {
     private RecyclerView recyclerView;
     private MyAdapter recyclerViewAdapter;
     private SelectionTracker tracker;
-    private static final String CONTENT_TYPE_JSON = "application/json";
-    private SportCenterParser sportCenterParser = new SportCenterParser(getContext());
-    private static final String URL_JSON = "https://datos.madrid.es/egob/catalogo/200186-0-polideportivos.json";
+
     private MyOnItemActivatedListenerFavourites onItemActivatedListenerFavourites;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -123,30 +125,20 @@ public class FavoritesFragment extends Fragment {
         recyclerViewAdapter.notifyDataSetChanged();
     }
     private void loadSportCenters(){
-        //Handler to receive Sport Centers
-        Log.d("FavoritesFragment","reached loadSportCenters()");
-        Handler handler = new Handler(Looper.getMainLooper()) {
+        final AsyncManager asyncManager = new ViewModelProvider(this).get(AsyncManager.class);
+        //Observer
+        final Observer progressObserver = new Observer<List<SportCenter>>(){
             @Override
-            public void handleMessage(@NonNull Message msg) {
-                // message received from background thread: load complete (or failure)
-                super.handleMessage(msg);
-                Log.d(logTag, "message received from background thread");
-                if(msg.getData().getBoolean("result")) {
-                    SportCenterDataset.getInstance().setGeneralList(sportCenterParser.getParse());
-                    //Get Favouties
-                    recyclerViewAdapter.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getFavouriteList().size());
-                    if(binding!=null)
-                        binding.messageInfoFavourites.setText("");
-                }else{
-                    Snackbar.make(binding.recyclerViewFavourites, msg.getData().getString("error"), Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
-                    //Toast.makeText(getContext(),msg.getData().getByteArray("error").toString(),Toast.LENGTH_SHORT);
-                }
+            public void onChanged(List<SportCenter> sportCenterList){
+                //Update UI elements
+                Log.d(logTag, "Message Received with size = " + sportCenterList.size());
+                recyclerViewAdapter.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getFavouriteList().size());
+                if(binding!=null)
+                    binding.messageInfoFavourites.setText("");
             }
         };
-        Executor executor = Executors.newSingleThreadExecutor();
-        DownloadRunnable dr = new DownloadRunnable(getContext(),handler,CONTENT_TYPE_JSON,URL_JSON);
-        dr.setParser(sportCenterParser);
-        executor.execute(dr);
+        //Create the observation with the previous observers:
+        asyncManager.getProgress().observe(getViewLifecycleOwner(),progressObserver);
+        asyncManager.launchBackgroundTask(new CheckerRunnable());
     }
 }
