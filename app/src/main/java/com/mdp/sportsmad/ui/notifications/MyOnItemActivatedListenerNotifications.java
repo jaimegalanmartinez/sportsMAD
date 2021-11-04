@@ -2,7 +2,6 @@ package com.mdp.sportsmad.ui.notifications;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -10,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.selection.OnItemActivatedListener;
 
-import com.google.gson.Gson;
-import com.mdp.sportsmad.SportCenterDetails;
 
 import java.util.List;
 

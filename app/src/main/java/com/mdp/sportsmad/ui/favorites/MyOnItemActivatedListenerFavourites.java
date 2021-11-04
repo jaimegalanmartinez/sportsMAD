@@ -11,7 +11,7 @@ import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.selection.OnItemActivatedListener;
 
 import com.google.gson.Gson;
-import com.mdp.sportsmad.SportCenterDetails;
+import com.mdp.sportsmad.SportCenterDetailsActivity;
 import com.mdp.sportsmad.model.SportCenter;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class MyOnItemActivatedListenerFavourites implements OnItemActivatedListe
         Log.d(TAG, "Clicked item with position = " + item.getPosition());
         Gson gson = new Gson();
         String myJson = gson.toJson(generalList.get(item.getPosition()));
-        Intent i = new Intent(context, SportCenterDetails.class);
+        Intent i = new Intent(context, SportCenterDetailsActivity.class);
         i.putExtra("sportCenter", myJson);
         context.startActivity(i);
         return true;
