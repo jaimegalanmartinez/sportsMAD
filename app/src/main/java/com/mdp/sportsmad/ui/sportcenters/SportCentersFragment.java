@@ -42,19 +42,13 @@ import java.util.concurrent.Executors;
 
 public class SportCentersFragment extends Fragment {
 
-    private SportCentersViewModel sportCentersViewModel;
     private FragmentSportsCentersBinding binding;
 
-    private static final List<SportCenter> generalList = new ArrayList<>();
     private String logTag ="SportsMAD_main";
     private RecyclerView recyclerView;
     private MyAdapter recyclerViewAdapter;
     private SelectionTracker tracker;
-    private static final String CONTENT_TYPE_JSON = "application/json";
-    private SportCenterParser sportCenterParser = new SportCenterParser(getContext());
-    private static final String URL_JSON = "https://datos.madrid.es/egob/catalogo/200186-0-polideportivos.json";
     private MyOnItemActivatedListener onItemActivatedListener;
-    //private SportCenterDataset SportCenterDataset;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         //sportCentersViewModel =
