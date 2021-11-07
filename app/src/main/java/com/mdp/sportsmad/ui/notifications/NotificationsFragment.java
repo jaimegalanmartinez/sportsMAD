@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.mdp.sportsmad.AsyncManager;
 import com.mdp.sportsmad.CheckerRunnable;
+import com.mdp.sportsmad.R;
 import com.mdp.sportsmad.databinding.FragmentNotificationsBinding;
 import com.mdp.sportsmad.model.SportCenter;
 import com.mdp.sportsmad.model.SportCenterDataset;
@@ -88,13 +89,10 @@ public class NotificationsFragment extends Fragment {
         //Load saved broker
         SharedPreferences sp = getContext().getSharedPreferences("favourites",getContext().MODE_PRIVATE);
         serverUri=sp.getString("broker","");
-        if(serverUri.equals("")){
-            showMessageSnack("Please, fill the address of the MQTT server. (tcp:x.x.x.x:1883)");
-        }
         loadRecyclerView();
+
         if(!serverUri.equals(""))
             loadMQTT();
-
         //Buttons
         Button clearAllButton = binding.clearAll;
         clearAllButton.setOnClickListener(new View.OnClickListener() {
@@ -113,14 +111,19 @@ public class NotificationsFragment extends Fragment {
         save_broker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//Save broker address on SharedPreferences
-                SharedPreferences sp = getContext().getSharedPreferences("favourites",getContext().MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("broker",editBroker.getText().toString());
-                editor.commit();
-                serverUri=sp.getString("broker","");
-                loadMQTT();
+                if(serverUri.equals("")){
+                    showMessageSnack("Please, fill the address of the MQTT server. (tcp:x.x.x.x:1883)");
+                }else {
+                    SharedPreferences sp = getContext().getSharedPreferences("favourites", getContext().MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("broker", editBroker.getText().toString());
+                    editor.commit();
+                    serverUri = sp.getString("broker", "");
+                    loadMQTT();
+                }
             }
         });
+
     }
     @Override
     public void onDestroyView() {
@@ -137,17 +140,14 @@ public class NotificationsFragment extends Fragment {
         binding = null;
     }
     private void showMessageSnack(String message){
-        if(binding!=null)
-            Snackbar.make(binding.recyclerViewNotifications, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        if(binding!=null && binding.clearAll!=null)
+            Snackbar.make(binding.clearAll, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
     private void addToHistory(SportCenterNotification sportCenterNotification) {
         System.out.println("LOG: " + sportCenterNotification);
         SportCenterDataset.getInstance().addNotification(sportCenterNotification);
         adapterNotifications.notifyDataSetChanged();
         adapterNotifications.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getNotificationList().size()-1);
-/*
-        if(binding!=null)
-            Snackbar.make(binding.recyclerViewNotifications, mainText, Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
     }
 
     public void subscribeToTopic(String subscriptionTopic) {
