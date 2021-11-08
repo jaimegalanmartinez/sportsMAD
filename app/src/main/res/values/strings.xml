@@ -9,4 +9,23 @@
     <string name="title_center">Sport Center</string>
     <string name="title_activity_maps2">MapsActivity2</string>
     <string name="steps_count_max">/%1$d</string>
+    <string name="user_profile_initial_name">Name</string>
+    <string name="user_profile_age_txt">Age:</string>
+    <string name="user_profile_height_fixed">Height (cm):</string>
+    <string name="user_profile_weight_fixed">Weight (kg):</string>
+    <string name="user_profile_gender_fixed">Gender:</string>
+    <string name="user_profile_bmi_fixed">BMI:</string>
+    <string name="userprofile_fixed_steps">Steps</string>
+    <string name="step_sensor_switch_name">Step sensor</string>
+    <string name="btn_txt_fill_your_personal_data">Fill your personal data</string>
+    <string name="form_fill_your_profile_fixed">Fill your profile information</string>
+    <string name="form_name_hint_text">Name</string>
+    <string name="form_hint_age_txt">Age</string>
+    <string name="form_hint_height">Height (cm)</string>
+    <string name="form_hint_weight">Weight (kg)</string>
+    <string name="form_txt_fixed_gender">Gender</string>
+    <string name="form_txt_radio_btn_male">Male</string>
+    <string name="form_txt_radio_btn_female">Female</string>
+    <string name="form_btn_txt_cancel">Cancel</string>
+    <string name="form_btn_txt_submit">Submit</string>
 </resources>

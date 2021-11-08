@@ -29,7 +29,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fill your profile information"
+                        android:text="@string/form_fill_your_profile_fixed"
                         android:layout_marginBottom="12dp"
                         android:textColor="@color/purple_500"
                         android:textStyle="bold"
@@ -41,7 +41,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         app:boxBackgroundColor="@android:color/transparent"
-                        android:hint="Name">
+                        android:hint="@string/form_name_hint_text">
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                         android:layout_height="wrap_content"
                         app:boxBackgroundColor="@android:color/transparent"
                         android:layout_marginBottom="12dp"
-                        android:hint="Age">
+                        android:hint="@string/form_hint_age_txt">
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                         android:layout_height="wrap_content"
                         app:boxBackgroundColor="@android:color/transparent"
                         android:layout_marginBottom="12dp"
-                        android:hint="Height (cm)">
+                        android:hint="@string/form_hint_height">
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                         android:layout_height="wrap_content"
                         app:boxBackgroundColor="@android:color/transparent"
                         android:layout_marginBottom="12dp"
-                        android:hint="Weight (kg)">
+                        android:hint="@string/form_hint_weight">
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
-                        android:text="Gender"
+                        android:text="@string/form_txt_fixed_gender"
                         android:textColor="@color/black"
                         />
                     <RadioGroup
@@ -115,7 +115,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
-                            android:text="Male"
+                            android:text="@string/form_txt_radio_btn_male"
                             app:buttonTint="@color/purple_500">
                         </androidx.appcompat.widget.AppCompatRadioButton>
                         <androidx.appcompat.widget.AppCompatRadioButton
@@ -123,7 +123,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="16dp"
-                            android:text="Female"
+                            android:text="@string/form_txt_radio_btn_female"
                             app:buttonTint="@color/purple_500">
                         </androidx.appcompat.widget.AppCompatRadioButton>
                     </RadioGroup>
@@ -137,7 +137,7 @@
                             android:id="@+id/form_cancel_btn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Cancel"
+                            android:text="@string/form_btn_txt_cancel"
                             android:layout_marginHorizontal="12dp"
                             style="?android:attr/buttonBarButtonStyle" />
                         <Button
@@ -145,7 +145,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="12dp"
-                            android:text="Submit"
+                            android:text="@string/form_btn_txt_submit"
                             style="?android:attr/buttonBarButtonStyle" />
                     </LinearLayout>
 

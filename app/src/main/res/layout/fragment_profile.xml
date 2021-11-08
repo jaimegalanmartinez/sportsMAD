@@ -2,35 +2,30 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     tools:context=".ui.profile.ProfileFragment">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_userProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="24dp"
-                android:gravity="center">
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
                 <TextView
                     android:id="@+id/profile_userName_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Name"
+                    android:text="@string/user_profile_initial_name"
                     android:layout_marginBottom="12dp"
                     android:textColor="@color/purple_500"
                     android:textStyle="bold"
@@ -46,7 +41,7 @@
                         android:id="@+id/profile_fixed_age_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Age:"
+                        android:text="@string/user_profile_age_txt"
                         android:layout_marginBottom="12dp"
                         android:textColor="@color/black"
                         android:textStyle="normal"
@@ -66,7 +61,7 @@
                         android:id="@+id/profile_fixed_height_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Height (cm):"
+                        android:text="@string/user_profile_height_fixed"
                         android:layout_marginBottom="12dp"
                         android:textColor="@color/black"
                         android:textStyle="normal"
@@ -86,7 +81,7 @@
                         android:id="@+id/profile_fixed_weight_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Weight (kg):"
+                        android:text="@string/user_profile_weight_fixed"
                         android:layout_marginBottom="12dp"
                         android:textColor="@color/black"
                         android:textStyle="normal"
@@ -106,7 +101,7 @@
                         android:id="@+id/profile_fixed_gender_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Gender:"
+                        android:text="@string/user_profile_gender_fixed"
                         android:layout_marginBottom="12dp"
                         android:textColor="@color/black"
                         android:textStyle="normal"
@@ -126,7 +121,7 @@
                         android:id="@+id/profile_fixed_BMI_txt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="BMI:"
+                        android:text="@string/user_profile_bmi_fixed"
                         android:layout_marginBottom="12dp"
                         android:textColor="@color/black"
                         android:textStyle="normal"
@@ -153,7 +148,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Steps"
+                    android:text="@string/userprofile_fixed_steps"
                     android:textAlignment="center"
                     android:textColor="@color/purple_500"
                     android:textStyle="bold"
@@ -165,8 +160,8 @@
                     android:layout_height="match_parent">
                     <com.mikhaellopez.circularprogressbar.CircularProgressBar
                         android:id="@+id/profile_circularProgressBarSteps"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
                         android:layout_centerInParent="true"
                         app:cpb_background_progressbar_color="#b6bbd8"
                         app:cpb_background_progressbar_width="4dp"
@@ -194,15 +189,15 @@
                         android:textColor="@color/black"
                         android:textSize="14sp" />
                 </RelativeLayout>
-
-
-
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="15dp"/>
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchStepSensor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="14dp"
-                    android:text="Step sensor"
+                    android:text="@string/step_sensor_switch_name"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -212,14 +207,8 @@
                     android:id="@+id/btn_fillPersonalData"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Fill your personal data" />
+                    android:text="@string/btn_txt_fill_your_personal_data" />
 
             </LinearLayout>
-
-
-        </androidx.cardview.widget.CardView>
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
