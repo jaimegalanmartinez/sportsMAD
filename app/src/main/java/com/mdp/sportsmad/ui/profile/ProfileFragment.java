@@ -318,8 +318,10 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
             stepCount = (int) (stepCount + sensorEvent.values[0]);
             if(userProfile != null){
                 userProfile.setSteps(stepCount);
-                binding.profileUserStepsValue.setText(String.valueOf(userProfile.getSteps()));
-                binding.profileCircularProgressBarSteps.setProgressWithAnimation((float)userProfile.getSteps());
+                if(binding!=null) {
+                    binding.profileUserStepsValue.setText(String.valueOf(userProfile.getSteps()));
+                    binding.profileCircularProgressBarSteps.setProgressWithAnimation((float) userProfile.getSteps());
+                }
                 Log.d("STEPSCOUNT:",stepCount + " "+userProfile.getSteps());
             }
 
