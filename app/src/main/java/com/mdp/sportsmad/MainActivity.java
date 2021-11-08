@@ -54,12 +54,9 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
         SportCenterDataset.createInstance(this,this);//Initialize
-        //SportCenterDataset.getInstance().removeAllFavourites();//TODO: Remove on final version
-        loadSportCenters();
-
-
-
-
+        //SportCenterDataset.getInstance().removeAllFavourites();
+        if(SportCenterDataset.getInstance().isFilled()==false)
+            loadSportCenters();
     }
     private void loadSportCenters(){
 
