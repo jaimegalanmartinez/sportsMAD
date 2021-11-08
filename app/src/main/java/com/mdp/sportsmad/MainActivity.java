@@ -1,5 +1,8 @@
 package com.mdp.sportsmad;
 
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,6 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
@@ -22,6 +26,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.snackbar.Snackbar;
 import com.mdp.sportsmad.databinding.ActivityMainBinding;
 import com.mdp.sportsmad.model.SportCenterDataset;
+import com.mdp.sportsmad.service.Receiver;
+import com.mdp.sportsmad.service.StepsService;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -30,14 +36,13 @@ import org.jetbrains.annotations.NotNull;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-
+    //private Receiver receiver;
+    //private IntentFilter filter = new IntentFilter(StepsService.class)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -85,5 +90,23 @@ public class MainActivity extends AppCompatActivity {
         DownloadRunnable dr = new DownloadRunnable(this,handler,CONTENT_TYPE_JSON,URL_JSON);
         dr.setParser(sportCenterParser);
         executor.execute(dr);
+    }
+
+    /*@Override
+    protected void onResume() {
+        stopService(new Intent(this, StepsService.class));
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        ContextCompat.startForegroundService(this, new Intent(this, StepsService.class));
+        super.onStop();
+    }
+    */
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 }

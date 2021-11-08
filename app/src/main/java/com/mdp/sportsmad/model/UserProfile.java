@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class UserProfile implements Serializable {
 
-    public enum Gender {male, female}
+    public enum Gender {male, female, undefined}
 
     private String name;
     private int age;
@@ -49,5 +49,9 @@ public class UserProfile implements Serializable {
     private void calculateCaloriesBurned(float speedFactor){
         //https://calculator.academy/steps-to-calories-calculator/
         this.caloriesBurned = this.steps * 0.04f * this.BMI * this.age * speedFactor;
+    }
+
+    public void setSteps(int steps) {
+        this.steps = steps;
     }
 }
