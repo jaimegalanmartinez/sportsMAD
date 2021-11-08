@@ -163,7 +163,33 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
         title= (TextView) findViewById(R.id.name);
         title.setText(sportCenter.getTitle());
         type= (TextView) findViewById(R.id.type_details);
-        type.setText(sportCenter.getType());
+        //type.setText(sportCenter.getType());
+
+        switch (sportCenter.getType()) {
+            case "Piscinas":
+                type.setText("Swimming pool");
+                break;
+            case "Gimnasios":
+                type.setText("Gym");
+                break;
+            case "Rocodromo":
+                type.setText("Climbing wall");
+                break;
+            case "CamposEstadiosFutbol":
+                type.setText("Football stadium");
+                break;
+            case "Embarcaderos":
+                type.setText("Pier");
+                break;
+            case "PistasTenisBadminton":
+                type.setText("Badminton & tennis court");
+                break;
+            case "CanchasBaloncesto":
+                type.setText("Basketball court");
+                break;
+            default:
+                type.setText("Gym");
+        }
         urlRelation= (Button) findViewById(R.id.url_link_details);
         urlRelation.setOnClickListener(new View.OnClickListener(){
             @Override
