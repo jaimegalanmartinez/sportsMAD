@@ -50,10 +50,10 @@ public class StepsService extends Service implements SensorEventListener {
 
         }catch (Exception e){
             Log.e("ERROR", e.getMessage());
-        }
+        }*/
         //return super.onStartCommand(intent, flags, startId);
         return START_STICKY; //Keep service running even if the app is killed
-        */
+
 
     }
 
