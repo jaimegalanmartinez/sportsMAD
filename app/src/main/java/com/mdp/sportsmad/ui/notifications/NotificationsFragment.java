@@ -1,12 +1,9 @@
 package com.mdp.sportsmad.ui.notifications;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.mdp.sportsmad.AsyncManager;
 import com.mdp.sportsmad.CheckerRunnable;
-import com.mdp.sportsmad.R;
 import com.mdp.sportsmad.databinding.FragmentNotificationsBinding;
 import com.mdp.sportsmad.model.SportCenter;
 import com.mdp.sportsmad.model.SportCenterDataset;
@@ -45,10 +41,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 public class NotificationsFragment extends Fragment {
@@ -102,7 +94,7 @@ public class NotificationsFragment extends Fragment {
             }
         });
         //If sport centers are not loaded, it lanches a observer to uptade the UI when they are downloaded.
-        if(SportCenterDataset.getInstance().getGeneralList().size()==0)
+        if(SportCenterDataset.getInstance().isFilled()==false)
             loadSportCenters();
 
         editBroker = (EditText) binding.editBroker;
@@ -111,12 +103,13 @@ public class NotificationsFragment extends Fragment {
         save_broker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//Save broker address on SharedPreferences
+                serverUri=editBroker.getText().toString();
                 if(serverUri.equals("")){
                     showMessageSnack("Please, fill the address of the MQTT server. (tcp:x.x.x.x:1883)");
                 }else {
                     SharedPreferences sp = getContext().getSharedPreferences("favourites", getContext().MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
-                    editor.putString("broker", editBroker.getText().toString());
+                    editor.putString("broker", serverUri);
                     editor.commit();
                     serverUri = sp.getString("broker", "");
                     loadMQTT();

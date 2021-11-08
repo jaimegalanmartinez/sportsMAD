@@ -62,6 +62,10 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
         sportCenter = gson.fromJson(getIntent().getStringExtra("sportCenter"), SportCenter.class);
         loadUI();
         loadBrokerMQTT();
+
+
+        if(!serverUri.equals(""))
+            loadMQTT();
     }
     private void loadMQTT(){
 
@@ -217,7 +221,7 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
                 if(serverUri.equals(""))
                     showMessageSnack("Please, fill the address of the MQTT server. (tcp:x.x.x.x:1883)");
                 else {
-                    loadMQTT();
+                    //loadMQTT();
                     publishMessage(publishTopic + sportCenter.getId(), commentary.getText().toString());
                 }
             }

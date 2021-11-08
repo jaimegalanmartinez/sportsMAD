@@ -1,14 +1,10 @@
 package com.mdp.sportsmad.ui.sportcenters;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,23 +18,17 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.mdp.sportsmad.AsyncManager;
 import com.mdp.sportsmad.CheckerRunnable;
-import com.mdp.sportsmad.DownloadRunnable;
 import com.mdp.sportsmad.MyAdapter;
 
-import com.mdp.sportsmad.SportCenterParser;
 import com.mdp.sportsmad.databinding.FragmentSportsCentersBinding;
 import com.mdp.sportsmad.model.SportCenter;
 import com.mdp.sportsmad.model.SportCenterDataset;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 public class SportCentersFragment extends Fragment {
 
@@ -73,7 +63,7 @@ public class SportCentersFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.d("SportCentersFragment","reached onViewCreated()");
         loadRecyclerView();
-        if(SportCenterDataset.getInstance().getGeneralList().size()==0)
+        if(SportCenterDataset.getInstance().isFilled()==false)
             loadSportCenters();
         else
             binding.messageInfo.setText("");
