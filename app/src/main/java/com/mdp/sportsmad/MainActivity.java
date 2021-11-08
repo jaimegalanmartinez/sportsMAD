@@ -36,8 +36,9 @@ import org.jetbrains.annotations.NotNull;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    //private Receiver receiver;
-    //private IntentFilter filter = new IntentFilter(StepsService.class)
+    private String CONTENT_TYPE_JSON = "application/json";
+    private String URL_JSON = "https://datos.madrid.es/egob/catalogo/200186-0-polideportivos.json";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void loadSportCenters(){
-        String CONTENT_TYPE_JSON = "application/json";
+
         SportCenterParser sportCenterParser = new SportCenterParser(this);
-        String URL_JSON = "https://datos.madrid.es/egob/catalogo/200186-0-polideportivos.json";
+
         //Handler to receive Sport Centers
         Log.d("FavoritesFragment","reached loadSportCenters()");
         Handler handler = new Handler(Looper.getMainLooper()) {

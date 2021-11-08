@@ -1,14 +1,13 @@
 package com.mdp.sportsmad.ui.notifications;
 
-import android.content.Intent;
-import android.hardware.SensorManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,21 +41,16 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 public class NotificationsFragment extends Fragment {
 
     private NotificationsViewModel notificationsViewModel;
     private FragmentNotificationsBinding binding;
-
-    final String serverUri = "tcp://192.168.1.29:1883";
-    //final String subscriptionTopic = "ubuntu/topic";
-    final String publishTopic = "android/topic";
-    String publishMessage = "Hello World!";
+    private EditText editBroker;
+    private Button save_broker;
+    String serverUri = "tcp://192.168.1.29:1883";
+    final String subscriptionTopic = "notifications/";
     MqttAndroidClient mqttAndroidClient;
     String clientId = "ExampleAndroidClient";
 
@@ -84,8 +78,13 @@ public class NotificationsFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d("NotificationsFragment","reached onViewCreated()");
+        //Load saved broker
+        SharedPreferences sp = getContext().getSharedPreferences("favourites",getContext().MODE_PRIVATE);
+        serverUri=sp.getString("broker","");
         loadRecyclerView();
-        loadMQTT();
+
+        if(!serverUri.equals(""))
+            loadMQTT();
         //Buttons
         Button clearAllButton = binding.clearAll;
         clearAllButton.setOnClickListener(new View.OnClickListener() {
@@ -94,15 +93,38 @@ public class NotificationsFragment extends Fragment {
                 deleteAllSelection();
             }
         });
-        if(SportCenterDataset.getInstance().getGeneralList().size()==0)
+        //If sport centers are not loaded, it lanches a observer to uptade the UI when they are downloaded.
+        if(SportCenterDataset.getInstance().isFilled()==false)
             loadSportCenters();
+
+        editBroker = (EditText) binding.editBroker;
+
+        save_broker = (Button) binding.saveBroker;
+        save_broker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {//Save broker address on SharedPreferences
+                serverUri=editBroker.getText().toString();
+                if(serverUri.equals("")){
+                    showMessageSnack("Please, fill the address of the MQTT server. (tcp:x.x.x.x:1883)");
+                }else {
+                    SharedPreferences sp = getContext().getSharedPreferences("favourites", getContext().MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("broker", serverUri);
+                    editor.commit();
+                    serverUri = sp.getString("broker", "");
+                    loadMQTT();
+                }
+            }
+        });
+
     }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         for(SportCenter sportCenter : SportCenterDataset.getInstance().getFavouriteList()){
             try {
-                mqttAndroidClient.unsubscribe("notifications/"+sportCenter.getId());
+                if(mqttAndroidClient!=null)
+                    mqttAndroidClient.unsubscribe("notifications/"+sportCenter.getId());
             } catch (MqttException e) {
                 e.printStackTrace();
             }
@@ -111,17 +133,14 @@ public class NotificationsFragment extends Fragment {
         binding = null;
     }
     private void showMessageSnack(String message){
-        if(binding!=null)
-            Snackbar.make(binding.recyclerViewNotifications, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        if(binding!=null && binding.clearAll!=null)
+            Snackbar.make(binding.clearAll, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
     private void addToHistory(SportCenterNotification sportCenterNotification) {
         System.out.println("LOG: " + sportCenterNotification);
         SportCenterDataset.getInstance().addNotification(sportCenterNotification);
         adapterNotifications.notifyDataSetChanged();
         adapterNotifications.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getNotificationList().size()-1);
-/*
-        if(binding!=null)
-            Snackbar.make(binding.recyclerViewNotifications, mainText, Snackbar.LENGTH_LONG).setAction("Action", null).show();*/
     }
 
     public void subscribeToTopic(String subscriptionTopic) {
@@ -179,7 +198,7 @@ public class NotificationsFragment extends Fragment {
                     // Because Clean Session is true, we need to re-subscribe
                     SportCenterDataset scd =SportCenterDataset.getInstance();
                     for(SportCenter sportCenter : scd.getFavouriteList()){
-                        subscribeToTopic("notifications/"+sportCenter.getId());
+                        subscribeToTopic(subscriptionTopic+sportCenter.getId());
                     }
                 } else {
                     showMessageSnack("Connected to: " + serverURI);
@@ -188,7 +207,7 @@ public class NotificationsFragment extends Fragment {
 
             @Override
             public void connectionLost(Throwable cause) {
-                showMessageSnack("The Connection was lost.");
+                showMessageSnack("The Connection was lost");
             }
 
             @Override
@@ -225,7 +244,7 @@ public class NotificationsFragment extends Fragment {
                     SportCenterDataset scd =SportCenterDataset.getInstance();
                     //Subscribe to all favourites sport centers
                     for(SportCenter sportCenter : scd.getFavouriteList()){
-                        subscribeToTopic("notifications/"+sportCenter.getId());
+                        subscribeToTopic(subscriptionTopic+sportCenter.getId());
                     }
                 }
 
@@ -260,34 +279,11 @@ public class NotificationsFragment extends Fragment {
         asyncManager.launchBackgroundTask(new CheckerRunnable());
     }
     public void deleteAllSelection() {
-        SportCenterDataset spd =SportCenterDataset.getInstance();
+        SportCenterDataset spd = SportCenterDataset.getInstance();
         int size = spd.getNotificationList().size();
         spd.removeNotificationList();
         mRecyclerView.getAdapter().notifyDataSetChanged();
-        mRecyclerView.getAdapter().notifyItemRangeRemoved(0,size);
+        mRecyclerView.getAdapter().notifyItemRangeRemoved(0, size);
     }
-    /*public void (){
-        Iterator iterator = tracker.getSelection().iterator();
-        //Get setected items
-        ArrayList<Integer> listSelected= new ArrayList<Integer>();
-        while (iterator.hasNext()){
-            listSelected.add(Integer.parseInt(iterator.next().toString()));
-        }
-        //Order items
-        Collections.sort(listSelected);
-        Collections.reverse(listSelected);
-
-        for (Integer i: listSelected) {
-            //Delete in database
-            SportCenterDataset spd =SportCenterDataset.getInstance();
-            spd.removeNotification(spd.getNotificationList().get(i.intValue()).getId());
-            //delete in RecyclerView
-            mRecyclerView.getAdapter().notifyItemRemoved(i.intValue());
-            mRecyclerView.getAdapter().notifyItemRangeChanged(i.intValue(),spd.getNotificationList().size());
-        }
-        //Clear all selected items
-        tracker.clearSelection();
-    }*/
-
 }
 

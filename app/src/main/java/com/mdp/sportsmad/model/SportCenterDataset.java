@@ -235,7 +235,7 @@ public class SportCenterDataset {
         editor.putStringSet("notifications",new HashSet<>() );
         editor.commit();
     }
-    public boolean getFilled(){
+    public boolean isFilled(){
         return filled;
     }
 }

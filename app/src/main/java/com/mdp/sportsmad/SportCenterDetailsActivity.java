@@ -1,6 +1,9 @@
 package com.mdp.sportsmad;
 
+import static java.security.AccessController.getContext;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.ArraySet;
@@ -45,7 +48,8 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
     private CheckBox favorite;
     private Button button_send;
     //MQTT
-    final String serverUri = "tcp://192.168.1.29:1883";
+    final String publishTopic = "commentaries/";
+    String serverUri = "tcp://192.168.1.29:1883";
     MqttAndroidClient mqttAndroidClient;
     String clientId = "ExampleAndroidClient";
 
@@ -56,69 +60,12 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
 
         Gson gson = new Gson();
         sportCenter = gson.fromJson(getIntent().getStringExtra("sportCenter"), SportCenter.class);
+        loadUI();
+        loadBrokerMQTT();
 
-        title= (TextView) findViewById(R.id.name);
-        title.setText(sportCenter.getTitle());
-        type= (TextView) findViewById(R.id.type_details);
-        type.setText(sportCenter.getType());
-        urlRelation= (Button) findViewById(R.id.url_link_details);
-        urlRelation.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-               Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(sportCenter.getUrlRelation()));
-               startActivity(i);
-            }
-        });
-        street= (TextView) findViewById(R.id.street_detail);
-        street.setText(sportCenter.getStreet());
-        latLng= (Button) findViewById(R.id.button_location);
-        latLng.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Gson gson = new Gson();
-                String myJson = gson.toJson(sportCenter);
-                Intent i = new Intent(SportCenterDetailsActivity.this, com.mdp.sportsmad.MapsActivity.class);
-                i.putExtra("sportCenter", myJson);
-                startActivity(i);
 
-            }
-        });
-        schedule= (TextView) findViewById(R.id.schedule);
-        schedule.setText(sportCenter.getSchedule());
-        services= (TextView) findViewById(R.id.services);
-        services.setText(sportCenter.getServices());
-
-        favorite = (CheckBox) findViewById(R.id.favorite_details);
-        //If it is favourite, set checkbox
-        if(SportCenterDataset.getInstance().isFavourite(sportCenter.getId())){
-            favorite.setChecked(true);
-        }
-        favorite.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                if(favorite.isChecked()){
-                    //Save this sport center as favourite
-
-                    SportCenterDataset spdataset = SportCenterDataset.getInstance();
-                    spdataset.addFavourite(sportCenter);
-                }else{
-
-                    SportCenterDataset spdataset = SportCenterDataset.getInstance();
-                    spdataset.removeFavourite(sportCenter.getId());
-                }
-
-            }
-        });
-        commentary = (TextView)  findViewById(R.id.comment_edit);
-        loadMQTT();
-        button_send = (Button) findViewById(R.id.button_send);
-        button_send.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-
-                publishMessage("commentaries/"+sportCenter.getId(),commentary.getText().toString());
-            }
-        });
+        if(!serverUri.equals(""))
+            loadMQTT();
     }
     private void loadMQTT(){
 
@@ -206,5 +153,104 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
     }
     private void showMessageSnack(String message){
         Snackbar.make(findViewById(R.id.all_parameters), message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
+    private void loadBrokerMQTT(){
+        SharedPreferences sp = this.getSharedPreferences("favourites",this.MODE_PRIVATE);
+        serverUri=sp.getString("broker","");
+    }
+    private void loadUI(){
+
+        title= (TextView) findViewById(R.id.name);
+        title.setText(sportCenter.getTitle());
+        type= (TextView) findViewById(R.id.type_details);
+        //type.setText(sportCenter.getType());
+
+        switch (sportCenter.getType()) {
+            case "Piscinas":
+                type.setText("Swimming pool");
+                break;
+            case "Gimnasios":
+                type.setText("Gym");
+                break;
+            case "Rocodromo":
+                type.setText("Climbing wall");
+                break;
+            case "CamposEstadiosFutbol":
+                type.setText("Football stadium");
+                break;
+            case "Embarcaderos":
+                type.setText("Pier");
+                break;
+            case "PistasTenisBadminton":
+                type.setText("Badminton & tennis court");
+                break;
+            case "CanchasBaloncesto":
+                type.setText("Basketball court");
+                break;
+            default:
+                type.setText("Gym");
+        }
+        urlRelation= (Button) findViewById(R.id.url_link_details);
+        urlRelation.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(sportCenter.getUrlRelation()));
+                startActivity(i);
+            }
+        });
+        street= (TextView) findViewById(R.id.street_detail);
+        street.setText(sportCenter.getStreet());
+        latLng= (Button) findViewById(R.id.button_location);
+        latLng.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Gson gson = new Gson();
+                String myJson = gson.toJson(sportCenter);
+                Intent i = new Intent(SportCenterDetailsActivity.this, com.mdp.sportsmad.MapsActivity.class);
+                i.putExtra("sportCenter", myJson);
+                startActivity(i);
+
+            }
+        });
+        schedule= (TextView) findViewById(R.id.schedule);
+        schedule.setText(sportCenter.getSchedule());
+        services= (TextView) findViewById(R.id.services);
+        services.setText(sportCenter.getServices());
+
+        favorite = (CheckBox) findViewById(R.id.favorite_details);
+        //If it is favourite, set checkbox
+        if(SportCenterDataset.getInstance().isFavourite(sportCenter.getId())){
+            favorite.setChecked(true);
+        }
+        favorite.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if(favorite.isChecked()){
+                    //Save this sport center as favourite
+
+                    SportCenterDataset spdataset = SportCenterDataset.getInstance();
+                    spdataset.addFavourite(sportCenter);
+                }else{
+
+                    SportCenterDataset spdataset = SportCenterDataset.getInstance();
+                    spdataset.removeFavourite(sportCenter.getId());
+                }
+
+            }
+        });
+        commentary = (TextView)  findViewById(R.id.comment_edit);
+
+        button_send = (Button) findViewById(R.id.button_send);
+        button_send.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if(serverUri.equals(""))
+                    showMessageSnack("Please, fill the address of the MQTT server. (tcp:x.x.x.x:1883)");
+                else {
+                    //loadMQTT();
+                    publishMessage(publishTopic + sportCenter.getId(), commentary.getText().toString());
+                }
+            }
+        });
     }
 }

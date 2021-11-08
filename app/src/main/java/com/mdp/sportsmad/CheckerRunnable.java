@@ -15,7 +15,7 @@ public class CheckerRunnable implements Runnable{
         Message msg;
         Bundle msg_data;
         SportCenterDataset spd = SportCenterDataset.getInstance();
-        while (!spd.getFilled()){
+        while (!spd.isFilled()){
             try {
                 Thread.sleep(200);
             } catch (InterruptedException e) {
