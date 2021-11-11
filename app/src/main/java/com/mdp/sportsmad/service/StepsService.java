@@ -16,7 +16,9 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-
+/**
+ * Due to lack of time we could not add the service, we tried to add it to count the steps in the background.
+ */
 public class StepsService extends Service implements SensorEventListener {
     private static final String LOG_TAG = "StepsService";
     private SensorManager sensorManager;

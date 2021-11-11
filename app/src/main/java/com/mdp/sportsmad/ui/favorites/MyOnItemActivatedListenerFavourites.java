@@ -11,7 +11,7 @@ import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.selection.OnItemActivatedListener;
 
 import com.google.gson.Gson;
-import com.mdp.sportsmad.SportCenterDetailsActivity;
+import com.mdp.sportsmad.activities.SportCenterDetailsActivity;
 import com.mdp.sportsmad.model.SportCenter;
 
 import java.util.List;

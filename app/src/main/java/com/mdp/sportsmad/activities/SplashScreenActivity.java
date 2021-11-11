@@ -1,11 +1,14 @@
-package com.mdp.sportsmad;
+package com.mdp.sportsmad.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 
+/**
+ * Finally not included in the application due to compatibility problems with lower Android versions than Android 10
+ * Used the bg_gradient.xml and splash_background.xml
+ */
 public class SplashScreenActivity extends AppCompatActivity {
 
     @Override

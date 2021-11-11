@@ -1,4 +1,4 @@
-package com.mdp.sportsmad;
+package com.mdp.sportsmad.activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -18,7 +18,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
+import com.mdp.sportsmad.R;
 import com.mdp.sportsmad.databinding.ActivityMapsBinding;
 import com.mdp.sportsmad.model.SportCenter;
 
