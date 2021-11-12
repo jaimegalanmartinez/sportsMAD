@@ -18,9 +18,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mdp.sportsmad.AsyncManager;
-import com.mdp.sportsmad.CheckerRunnable;
-import com.mdp.sportsmad.MyAdapter;
+import com.mdp.sportsmad.utils.AsyncManager;
+import com.mdp.sportsmad.utils.CheckerRunnable;
 import com.mdp.sportsmad.model.SportCenterDataset;
 import com.mdp.sportsmad.databinding.FragmentFavoritesBinding;
 import com.mdp.sportsmad.model.SportCenter;
@@ -38,7 +37,7 @@ public class FavoritesFragment extends Fragment {
     private FragmentFavoritesBinding binding;
     private String logTag ="SportsMAD_main";
     private RecyclerView recyclerView;
-    private MyAdapter recyclerViewAdapter;
+    private MyAdapterFavorites recyclerViewAdapter;
     private SelectionTracker tracker;
 
     private MyOnItemActivatedListenerFavourites onItemActivatedListenerFavourites;
@@ -87,7 +86,7 @@ public class FavoritesFragment extends Fragment {
         //recyclerView = findViewById(R.id.recyclerView);
         recyclerView = binding.recyclerViewFavourites;
 
-        recyclerViewAdapter = new MyAdapter(getContext(), SportCenterDataset.getInstance().getFavouriteList());
+        recyclerViewAdapter = new MyAdapterFavorites(getContext(), SportCenterDataset.getInstance().getFavouriteList());
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         //Layout

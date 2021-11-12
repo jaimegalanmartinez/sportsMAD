@@ -1,4 +1,4 @@
-package com.mdp.sportsmad;
+package com.mdp.sportsmad.ui.favorites;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,7 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyViewHolder extends RecyclerView.ViewHolder {
+import com.mdp.sportsmad.R;
+
+public class MyViewHolderFavorites extends RecyclerView.ViewHolder {
 
     // Holds references to individual item views
     Context context;
@@ -20,9 +22,9 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
     TextView type;
     ImageView imageType;
 
-    private static final String TAG = "ListOfItems, MyViewHolder";
+    private static final String TAG = "ListOfItems, MyViewHolderFavorites";
 
-    public MyViewHolder(Context ctxt, View itemView) {
+    public MyViewHolderFavorites(Context ctxt, View itemView) {
         super(itemView);
         context = ctxt;
         title = itemView.findViewById(R.id.title);
@@ -31,7 +33,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         imageType = itemView.findViewById(R.id.imageView);
     }
 
-    void bindValues(com.mdp.sportsmad.model.SportCenter item) {
+    public void bindValues(com.mdp.sportsmad.model.SportCenter item) {
         // give values to the elements contained in the item view
         //Default values
 

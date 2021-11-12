@@ -1,4 +1,4 @@
-package com.mdp.sportsmad;
+package com.mdp.sportsmad.utils;
 
 import android.content.Context;
 import android.os.Bundle;

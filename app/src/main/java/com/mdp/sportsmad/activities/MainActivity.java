@@ -15,13 +15,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.mdp.sportsmad.DownloadRunnable;
+import com.mdp.sportsmad.utils.DownloadRunnable;
 import com.mdp.sportsmad.R;
-import com.mdp.sportsmad.SportCenterParser;
+import com.mdp.sportsmad.utils.SportCenterParser;
 import com.mdp.sportsmad.databinding.ActivityMainBinding;
 import com.mdp.sportsmad.model.SportCenterDataset;
-import com.mdp.sportsmad.service.Receiver;
-import com.mdp.sportsmad.service.StepsService;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;

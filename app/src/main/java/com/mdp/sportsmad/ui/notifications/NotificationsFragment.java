@@ -21,14 +21,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.mdp.sportsmad.AsyncManager;
-import com.mdp.sportsmad.CheckerRunnable;
+import com.mdp.sportsmad.utils.AsyncManager;
+import com.mdp.sportsmad.utils.CheckerRunnable;
 import com.mdp.sportsmad.databinding.FragmentNotificationsBinding;
 import com.mdp.sportsmad.model.SportCenter;
 import com.mdp.sportsmad.model.SportCenterDataset;
 import com.mdp.sportsmad.model.SportCenterNotification;
-import com.mdp.sportsmad.ui.sportcenters.MyItemDetailsLookup;
-import com.mdp.sportsmad.ui.sportcenters.MyItemKeyProvider;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -97,6 +95,10 @@ public class NotificationsFragment extends Fragment {
                 serverUri=editBroker.getText().toString();
                 if(serverUri.equals("")){
                     showMessageSnack("Please, fill the address of the MQTT server. (tcp:x.x.x.x:1883)");
+                    SharedPreferences sp = getContext().getSharedPreferences("favourites", getContext().MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("broker", serverUri);
+                    editor.apply();
                 }else {
                     SharedPreferences sp = getContext().getSharedPreferences("favourites", getContext().MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
@@ -115,7 +117,7 @@ public class NotificationsFragment extends Fragment {
             try {
                 if(mqttAndroidClient!=null)
                     mqttAndroidClient.unsubscribe("notifications/"+sportCenter.getId());
-            } catch (MqttException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

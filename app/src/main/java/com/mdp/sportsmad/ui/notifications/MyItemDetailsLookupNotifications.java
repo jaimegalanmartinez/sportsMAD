@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mdp.sportsmad.ui.sportcenters.MyViewHolder;
+
 public final class MyItemDetailsLookupNotifications extends ItemDetailsLookup<Long> {
 
     private static final String TAG = "ListOfItems, MyItemDetailsLookup";
@@ -30,8 +32,8 @@ public final class MyItemDetailsLookupNotifications extends ItemDetailsLookup<Lo
         View view = mRecyclerView.findChildViewUnder(e.getX(), e.getY());
         if (view != null) {
             RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(view);
-            if (holder instanceof com.mdp.sportsmad.MyViewHolder) {
-                return ((com.mdp.sportsmad.MyViewHolder) holder).getItemDetails();
+            if (holder instanceof MyViewHolder) {
+                return ((MyViewHolder) holder).getItemDetails();
             }
         }
         return null;

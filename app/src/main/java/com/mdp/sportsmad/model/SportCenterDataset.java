@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStore;
 import androidx.lifecycle.ViewModelStoreOwner;
 
-import com.google.android.gms.common.util.CollectionUtils;
 import com.google.gson.Gson;
-import com.mdp.sportsmad.AsyncManager;
+import com.mdp.sportsmad.utils.AsyncManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;

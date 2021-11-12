@@ -18,9 +18,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mdp.sportsmad.AsyncManager;
-import com.mdp.sportsmad.CheckerRunnable;
-import com.mdp.sportsmad.MyAdapter;
+import com.mdp.sportsmad.utils.AsyncManager;
+import com.mdp.sportsmad.utils.CheckerRunnable;
 
 import com.mdp.sportsmad.databinding.FragmentSportsCentersBinding;
 import com.mdp.sportsmad.model.SportCenter;
