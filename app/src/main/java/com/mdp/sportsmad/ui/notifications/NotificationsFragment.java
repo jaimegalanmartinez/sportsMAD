@@ -110,7 +110,7 @@ public class NotificationsFragment extends Fragment {
                     SharedPreferences sp = getContext().getSharedPreferences("favourites", getContext().MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString("broker", serverUri);
-                    editor.commit();
+                    editor.apply();
                     serverUri = sp.getString("broker", "");
                     loadMQTT();
                 }

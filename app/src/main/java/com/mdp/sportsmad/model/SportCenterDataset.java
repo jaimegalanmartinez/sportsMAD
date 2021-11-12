@@ -105,7 +105,7 @@ public class SportCenterDataset {
         Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
         favouritesSet.add(Integer.toString(sportCenter.getId()));
         editor.putStringSet("favourites",favouritesSet);
-        editor.commit();
+        editor.apply();
         favouriteList.add(sportCenter);
     }
 
@@ -118,7 +118,7 @@ public class SportCenterDataset {
         Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
         favouritesSet.remove(Integer.toString(id));
         editor.putStringSet("favourites",favouritesSet);
-        editor.commit();
+        editor.apply();
 
         SportCenter toRemove=null;
         for(SportCenter sp1: favouriteList){
@@ -179,7 +179,7 @@ public class SportCenterDataset {
         favouriteList.clear();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet("favourites",new HashSet<>() );
-        editor.commit();
+        editor.apply();
     }
     /**
      * Adds a sport center in favouriteList and in disk.
@@ -191,7 +191,7 @@ public class SportCenterDataset {
         Gson gson =new Gson();
         favouritesSet.add(gson.toJson(sportCenterNotification));
         editor.putStringSet("notifications",favouritesSet);
-        editor.commit();
+        editor.apply();
         notificationList.add(sportCenterNotification);
     }
 
@@ -212,7 +212,7 @@ public class SportCenterDataset {
         if(toRemove!=null) {
             notificationsSet.remove(gson.toJson(toRemove));
             editor.putStringSet("notifications", notificationsSet);
-            editor.commit();
+            editor.apply();
 
             notificationList.remove(toRemove);
         }
@@ -233,7 +233,7 @@ public class SportCenterDataset {
         notificationList.clear();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet("notifications",new HashSet<>() );
-        editor.commit();
+        editor.apply();
     }
     public boolean isFilled(){
         return filled;
