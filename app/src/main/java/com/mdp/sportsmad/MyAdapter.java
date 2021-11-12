@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mdp.sportsmad.model.SportCenter;
-
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<com.mdp.sportsmad.MyViewHolder> {

@@ -81,45 +81,9 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
                     binding.profileUserStepsValue.setText(String.valueOf(userProfile.getSteps()));
 
                 }
-
-
-
             }
         });
-        // Register the permissions callback, which handles the user's response to the
-        // system permissions dialog. Save the return value, an instance of
-        // ActivityResultLauncher, as an instance variable.
-        /*final String [] PERMISSIONS = {
-                Manifest.permission.ACTIVITY_RECOGNITION,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-        };
-        */
-        /*
-        ActivityResultLauncher<String[]> requestPermissionLauncher =
-                registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), isGranted-> {
-                    if (isGranted.containsValue(true)) {
-                        // Permission is granted. Continue the action or workflow in your
-                        // app.
-                    } else {
-                        // Explain to the user that the feature is unavailable because the
-                        // features requires a permission that the user has denied. At the
-                        // same time, respect the user's decision. Don't link to system
-                        // settings in an effort to convince the user to change their
-                        // decision.
-                        Toast.makeText(getActivity(), "Step sensor not supported. Need the activity permission.", Toast.LENGTH_LONG).show();
-                    }
-                });
 
-
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) {
-            //ask for permission
-            //If sdk device version >= android 10
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                requestPermissionLauncher.launch((PERMISSIONS));
-            }
-        }
-        */
         ActivityResultLauncher<String> requestPermissionLauncher =
                 registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted-> {
                     if (isGranted) {
@@ -135,7 +99,6 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
                     }
                 });
 
-
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) {
             //ask for permission
@@ -150,8 +113,6 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         stepCount = 0;
 
-        //Switch disabled till user inputs his information
-        //binding.switchStepSensor.setClickable(false);
         //Listener to check if switch Step sensor state changes
         binding.switchStepSensor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -167,6 +128,22 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
             }
         });
 
+        //Set long click listener to reset steps count when making long click in steps number count
+        binding.profileUserStepsValue.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                stepCount = 0;
+                if(userProfile != null) {
+                    userProfile.setSteps(stepCount);
+                    if(binding != null) {
+                        binding.profileUserStepsValue.setText(String.valueOf(userProfile.getSteps()));
+                        binding.profileCircularProgressBarSteps.setProgressWithAnimation((float) userProfile.getSteps());
+                        Toast.makeText(getContext(),"Steps reseted", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return false;
+            }
+        });
 
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -188,39 +165,14 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
                                 Log.d("USERINFO",String.valueOf(userProfile.getBMI()));
                             }
 
-                            //doSomeOperations();
                         }else if (result.getResultCode() == Activity.RESULT_CANCELED){
 
                         }
                     }
                 });
 
-
         return root;
     }
-
-    /*//ask for permission
-    //If sdk device version >= android 10
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        requestPermissionLauncher.launch((PERMISSIONS));
-    }
-       */
-    /*private boolean hasPermissions(String[] permissions){
-        if (permissions != null) {
-            for (String permission : permissions) {
-                if (ContextCompat.checkSelfPermission(getActivity(),
-                        permission) == PackageManager.PERMISSION_DENIED) {
-                    Log.d("sportMAD permissions", "Permission is not granted: " + permission);
-                    return false;
-                }else {
-                        Log.d("sportMAD permissions", "Permission is granted: " + permission);
-                    }
-
-                }
-            }
-    }
-    */
-
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -250,9 +202,11 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
                 sharedPref.getFloat("weightUser", 0f),
                 UserProfile.Gender.valueOf(sharedPref.getString("genderUser", "undefined")));
 
-        //Set steps to userProfile
+        //Retrieve step count from shared preferences
         stepCount = sharedPref.getInt("stepCount", 0);
+        //Set step count to the circular progress bar
         binding.profileCircularProgressBarSteps.setProgress(stepCount);
+        //Set steps to userProfile
         userProfile.setSteps(stepCount);
         profileViewModel.setmUserProfile(userProfile);
 
@@ -267,8 +221,6 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
         binding.profileUserGenderValue.setText(userProfile.getGender().name());
         binding.profileUserBMIValue.setText(String.format("%.2f",userProfile.getBMI()));
         binding.profileUserStepsValue.setText(String.valueOf(userProfile.getSteps()));
-
-
 
     }
 

@@ -28,4 +28,11 @@
     <string name="form_txt_radio_btn_female">Female</string>
     <string name="form_btn_txt_cancel">Cancel</string>
     <string name="form_btn_txt_submit">Submit</string>
+    <string name="swimmingPool">Swimming pool</string>
+    <string name="gym">Gym</string>
+    <string name="climbing_wall">Climbing wall</string>
+    <string name="football_stadium">Football stadium</string>
+    <string name="pier">Pier</string>
+    <string name="badminton_tennis_court"><![CDATA[Badminton & tennis court]]></string>
+    <string name="basketball_court">Basketball court</string>
 </resources>

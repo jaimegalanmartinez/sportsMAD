@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class SportCenterParser {
                 String title=(String) graph.get("title");
                 String type="Gimnasios";
                 if(graph.has("@type")) {
-                    String typeSplit[] = graph.getString("@type").split("/");
+                    String[] typeSplit = graph.getString("@type").split("/");
                     type = typeSplit[typeSplit.length - 1];
                 }
                 String urlRelation=graph.getString("relation");
@@ -60,7 +61,7 @@ public class SportCenterParser {
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
-            json = new String(buffer, "UTF-8");
+            json = new String(buffer, StandardCharsets.UTF_8);
         } catch ( IOException ex) {
             ex.printStackTrace();
             return null;

@@ -35,11 +35,11 @@ public class AsyncManager extends ViewModel {
                     sportCentersGeneral.setValue(SportCenterDataset.getInstance().getGeneralList());
             }
         };
-        sportCentersGeneral=new MutableLiveData<List<SportCenter>>();
+        sportCentersGeneral= new MutableLiveData<>();
     }
     public LiveData<List<SportCenter>> getProgress(){
         if(sportCentersGeneral==null){
-            sportCentersGeneral=new MutableLiveData<List<SportCenter>>();
+            sportCentersGeneral= new MutableLiveData<>();
         }
         return sportCentersGeneral;
     }

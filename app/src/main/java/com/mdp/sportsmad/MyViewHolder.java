@@ -40,35 +40,35 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         type.setText(item.getType());
 
         //Assign an image and type text description to each item depending on their type
-        String typeSplit[]= item.getType().split("/");
+        String[] typeSplit = item.getType().split("/");
         switch (typeSplit[typeSplit.length-1]){
             case "Piscinas":
                 imageType.setImageResource(R.drawable.piscina_icon);
-                type.setText("Swimming pool");
+                type.setText(R.string.swimmingPool);
                 break;
             case "Gimnasios":
                 imageType.setImageResource(R.drawable.sport_icon_png_10);
-                type.setText("Gym");
+                type.setText(R.string.gym);
                 break;
             case "Rocodromo":
                 imageType.setImageResource(R.drawable.png_clipart_rock_climbing_computer_icons_climbing_harnesses_rock_text_hand);
-                type.setText("Climbing wall");
+                type.setText(R.string.climbing_wall);
                 break;
             case "CamposEstadiosFutbol":
                 imageType.setImageResource(R.drawable._57_3576682_png_file_jugador_de_futbol_icono);
-                type.setText("Football stadium");
+                type.setText(R.string.football_stadium);
                 break;
             case "Embarcaderos":
                 imageType.setImageResource(R.drawable.__pier);
-                type.setText("Pier");
+                type.setText(R.string.pier);
                 break;
             case "PistasTenisBadminton":
                 imageType.setImageResource(R.drawable.tennisplayerplayingtennis_89117);
-                type.setText("Badminton & tennis court");
+                type.setText(R.string.badminton_tennis_court);
                 break;
             case "CanchasBaloncesto":
                 imageType.setImageResource(R.drawable.baloncesto);
-                type.setText("Basketball court");
+                type.setText(R.string.basketball_court);
                 break;
             default:
                 imageType.setImageResource(R.drawable.ic_launcher_foreground);

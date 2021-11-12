@@ -81,7 +81,7 @@ public class DownloadRunnable implements Runnable{
                 }
                 urlConnection.disconnect();
             } catch (Exception e) {//Error at downloading
-                //response = e.toString();
+
             }
 
             Log.d(logTag, "load complete, sending message to UI thread");
