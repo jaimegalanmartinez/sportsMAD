@@ -1,4 +1,4 @@
-package com.mdp.sportsmad;
+package com.mdp.sportsmad.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -80,7 +80,6 @@ public class ProfileDataActivity extends AppCompatActivity {
                 switch (selectedOption) {
                     case "Male":
                         gender = UserProfile.Gender.male;
-                        Log.d("FORMINFO",String.valueOf(gender));
                         if(isValidUserInfo()){
                             submitBtn.setEnabled(true);
                         }else{
@@ -95,8 +94,6 @@ public class ProfileDataActivity extends AppCompatActivity {
                         }else{
                             submitBtn.setEnabled(false);
                         }
-                        Log.d("FORMINFO",getLifecycle().getCurrentState().name());
-
                         break;
                 }
             }
@@ -115,6 +112,7 @@ public class ProfileDataActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Create userProfile object with the information provide by the user
                 UserProfile userProfile = new UserProfile(name, age, height, weight, gender);
                 Log.d("USERINFO",userProfile.getName());
                 Log.d("USERINFO",String.valueOf(userProfile.getAge()));
@@ -122,6 +120,7 @@ public class ProfileDataActivity extends AppCompatActivity {
                 Log.d("USERINFO",String.valueOf(userProfile.getWeight()));
                 Log.d("USERINFO",userProfile.getGender().name());
                 Log.d("USERINFO",String.valueOf(userProfile.getBMI()));
+                //Send the userProfile object using an implicit intent
                 Intent userData = new Intent();
                 userData.putExtra("userProfileObj", userProfile);
                 setResult(RESULT_OK, userData);

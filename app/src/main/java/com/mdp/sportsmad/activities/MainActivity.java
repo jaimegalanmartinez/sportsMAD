@@ -1,8 +1,5 @@
-package com.mdp.sportsmad;
+package com.mdp.sportsmad.activities;
 
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,18 +9,15 @@ import android.util.Log;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.mdp.sportsmad.DownloadRunnable;
+import com.mdp.sportsmad.R;
+import com.mdp.sportsmad.SportCenterParser;
 import com.mdp.sportsmad.databinding.ActivityMainBinding;
 import com.mdp.sportsmad.model.SportCenterDataset;
 import com.mdp.sportsmad.service.Receiver;
@@ -31,7 +25,6 @@ import com.mdp.sportsmad.service.StepsService;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,15 +65,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("sportMAD", "message received from background thread");
                 if(msg.getData().getBoolean("result")) {
                     SportCenterDataset.getInstance().setGeneralList(sportCenterParser.getParse());
-                    //Get Favouties
-                    //recyclerViewAdapter.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getFavouriteList().size());
-                    /*if(binding!=null)
-                        binding.messageInfoFavourites.setText("");*/
-                }else{
-                    //Snackbar.make(binding.recyclerViewFavourites, msg.getData().getString("error"), Snackbar.LENGTH_LONG).setAction("Action", null).show();
-
-
-                    //Toast.makeText(getContext(),msg.getData().getByteArray("error").toString(),Toast.LENGTH_SHORT);
                 }
             }
         };
@@ -95,14 +79,12 @@ public class MainActivity extends AppCompatActivity {
         stopService(new Intent(this, StepsService.class));
         super.onResume();
     }
-
     @Override
     protected void onStop() {
         ContextCompat.startForegroundService(this, new Intent(this, StepsService.class));
         super.onStop();
     }
     */
-
     @Override
     protected void onPause() {
         super.onPause();

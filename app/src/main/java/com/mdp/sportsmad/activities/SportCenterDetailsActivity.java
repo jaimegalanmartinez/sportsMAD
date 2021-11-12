@@ -1,12 +1,9 @@
-package com.mdp.sportsmad;
-
-import static java.security.AccessController.getContext;
+package com.mdp.sportsmad.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.ArraySet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,9 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.mdp.sportsmad.R;
 import com.mdp.sportsmad.model.SportCenter;
 import com.mdp.sportsmad.model.SportCenterDataset;
-import com.mdp.sportsmad.model.SportCenterNotification;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -30,10 +27,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 public class SportCenterDetailsActivity extends AppCompatActivity {
     private SportCenter sportCenter;
@@ -206,7 +199,7 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Gson gson = new Gson();
                 String myJson = gson.toJson(sportCenter);
-                Intent i = new Intent(SportCenterDetailsActivity.this, com.mdp.sportsmad.MapsActivity.class);
+                Intent i = new Intent(SportCenterDetailsActivity.this, MapsActivity.class);
                 i.putExtra("sportCenter", myJson);
                 startActivity(i);
 
@@ -227,7 +220,6 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(favorite.isChecked()){
                     //Save this sport center as favourite
-
                     SportCenterDataset spdataset = SportCenterDataset.getInstance();
                     spdataset.addFavourite(sportCenter);
                 }else{

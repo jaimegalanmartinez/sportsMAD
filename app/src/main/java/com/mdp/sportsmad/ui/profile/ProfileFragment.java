@@ -6,20 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -33,17 +30,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.mdp.sportsmad.ProfileDataActivity;
+import com.mdp.sportsmad.activities.ProfileDataActivity;
 import com.mdp.sportsmad.R;
 import com.mdp.sportsmad.databinding.FragmentProfileBinding;
 import com.mdp.sportsmad.model.UserProfile;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
-
-import kotlin.Unit;
 
 public class ProfileFragment extends Fragment implements SensorEventListener {
 

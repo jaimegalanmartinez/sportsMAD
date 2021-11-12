@@ -11,7 +11,6 @@ public class UserProfile implements Serializable {
     private int height; //cm
     private float weight; //kg
     private final Gender gender;
-
     private float BMI;
     private int steps;
     private float caloriesBurned;
