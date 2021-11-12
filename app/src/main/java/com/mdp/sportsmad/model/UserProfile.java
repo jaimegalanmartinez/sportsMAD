@@ -2,6 +2,9 @@ package com.mdp.sportsmad.model;
 
 import java.io.Serializable;
 
+/**
+ * Class that describes a User with his personal information and steps done.
+ */
 public class UserProfile implements Serializable {
 
     public enum Gender {male, female, undefined}

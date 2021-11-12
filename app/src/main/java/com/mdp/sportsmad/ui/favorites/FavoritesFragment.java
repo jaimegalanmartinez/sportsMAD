@@ -30,12 +30,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Corresponds to the Favourite tab
+ */
 public class FavoritesFragment extends Fragment {
 
-    private FavoritesViewModel favoritesViewModel;
     private FragmentFavoritesBinding binding;
-
-    private static final List<SportCenter> generalList = new ArrayList<>();
     private String logTag ="SportsMAD_main";
     private RecyclerView recyclerView;
     private MyAdapter recyclerViewAdapter;
@@ -45,26 +45,17 @@ public class FavoritesFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        /*favoritesViewModel =
-                new ViewModelProvider(this).get(FavoritesViewModel.class);
-*/
+
         binding = FragmentFavoritesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        /*final TextView textView = binding.textFavorites;
-        favoritesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
         return root;
     }
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d("FavoritesFragment","reached onViewCreated()");
-        loadRecyclerView();
-        if(SportCenterDataset.getInstance().isFilled()==false)
+        loadRecyclerView();//Loads UI of recycler view
+        if(SportCenterDataset.getInstance().isFilled()==false)//If sport centers not downloaded, create Observer
             loadSportCenters();
         else
             binding.messageInfoFavourites.setText("");
@@ -73,7 +64,7 @@ public class FavoritesFragment extends Fragment {
     public void onResume() {
         Log.d("FavoritesFragment","reached onResume()");
         super.onResume();
-        //Reload teh dataset
+        //Reload the dataset
         List<SportCenter> FavouriteList = SportCenterDataset.getInstance().getFavouriteList();
         List<SportCenter> FavouriteListCopy= new ArrayList<SportCenter> ();//Create a copy
         for (SportCenter sp: FavouriteList)
@@ -115,6 +106,10 @@ public class FavoritesFragment extends Fragment {
         recyclerViewAdapter.setSelectionTracker(tracker);
         recyclerViewAdapter.notifyDataSetChanged();
     }
+
+    /**
+     * Creates an Observer to notify when sport centers are downloaded
+     */
     private void loadSportCenters(){
         final AsyncManager asyncManager = new ViewModelProvider(this).get(AsyncManager.class);
         //Observer

@@ -18,15 +18,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Stores the sport centers downloaded in list and can store and load from SharedPreferences
+ * the favourites sport centers and notifications.
+ * In addition, it can add favourite or notification and remove them.
+ */
 public class SportCenterDataset {
-    private List<SportCenter> generalList;
-    private List<SportCenter> favouriteList;
-    private List<SportCenterNotification> notificationList;
-    private static SportCenterDataset instance=null;
-    private Context c;
+    private List<SportCenter> generalList;//All sport centers. At the beginning of the app it is empty until they are downloaded.
+    private List<SportCenter> favouriteList;//Only favourites sport centers
+    private List<SportCenterNotification> notificationList;//List of notifications shown to hte user
+    private static SportCenterDataset instance=null;//Single instance on this class
+    private Context c;//Context to save values on SharedPreferences
     private static SharedPreferences sharedPreferences;
-    private  ViewModelStoreOwner vm;
-    private boolean filled;
+    private  ViewModelStoreOwner vm;//ViewModel to notify that sport centers have been loaded
+    private boolean filled;//True if generalList is filled
     public SportCenterDataset(Context c,ViewModelStoreOwner vm){
         generalList = new ArrayList<>();
         favouriteList = new ArrayList<>();
@@ -69,6 +74,7 @@ public class SportCenterDataset {
             this.generalList.add(sp);
         updateFavourites();
         filled=true;
+        //Notify that lists are loaded
         final AsyncManager asyncManager = new ViewModelProvider(vm).get(AsyncManager.class);
         asyncManager.setSportCentersGeneral(generalList);
     }
@@ -217,6 +223,9 @@ public class SportCenterDataset {
             notificationList.remove(toRemove);
         }
     }
+    /**
+     * Obtain a sport center notification by its id.
+     */
     public SportCenterNotification getSportCenterNotificationById(int id){
         SportCenterNotification scnElement = null;
         Gson gson =new Gson();
@@ -229,6 +238,10 @@ public class SportCenterDataset {
     public List<SportCenterNotification> getNotificationList(){
         return notificationList;
     }
+
+    /**
+     * Deletes all sport centers notifications in notificationList and in disk.
+     */
     public void removeNotificationList(){
         notificationList.clear();
         SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -4,6 +4,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 
+/**
+ * Class describing the object of a Sport Center
+ */
 public class SportCenter implements Serializable {
     private int id;
     private String title;

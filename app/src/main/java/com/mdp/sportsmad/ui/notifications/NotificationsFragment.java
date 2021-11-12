@@ -42,10 +42,11 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
+/**
+ * Corresponds to the Notifications tab
+ */
 public class NotificationsFragment extends Fragment {
 
-    private NotificationsViewModel notificationsViewModel;
     private FragmentNotificationsBinding binding;
     private EditText editBroker;
     private Button save_broker;
@@ -60,19 +61,10 @@ public class NotificationsFragment extends Fragment {
     RecyclerView mRecyclerView;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        /*notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
-*/
+
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        /*final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
         return root;
     }
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
@@ -81,10 +73,10 @@ public class NotificationsFragment extends Fragment {
         //Load saved broker
         SharedPreferences sp = getContext().getSharedPreferences("favourites",getContext().MODE_PRIVATE);
         serverUri=sp.getString("broker","");
-        loadRecyclerView();
-
         if(!serverUri.equals(""))
-            loadMQTT();
+            loadMQTT();//If something is stored, then try to connect
+
+        loadRecyclerView();//Loads UI of recycler view
         //Buttons
         Button clearAllButton = binding.clearAll;
         clearAllButton.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +90,6 @@ public class NotificationsFragment extends Fragment {
             loadSportCenters();
 
         editBroker = (EditText) binding.editBroker;
-
         save_broker = (Button) binding.saveBroker;
         save_broker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +107,6 @@ public class NotificationsFragment extends Fragment {
                 }
             }
         });
-
     }
     @Override
     public void onDestroyView() {
@@ -132,10 +122,20 @@ public class NotificationsFragment extends Fragment {
 
         binding = null;
     }
+
+    /**
+     * Displays a Snackbar with the text passed as argument
+     * @param message
+     */
     private void showMessageSnack(String message){
         if(binding!=null && binding.clearAll!=null)
             Snackbar.make(binding.clearAll, message, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
+
+    /**
+     * Adds to list a new notification
+     * @param sportCenterNotification notification to add
+     */
     private void addToHistory(SportCenterNotification sportCenterNotification) {
         System.out.println("LOG: " + sportCenterNotification);
         SportCenterDataset.getInstance().addNotification(sportCenterNotification);
@@ -143,6 +143,10 @@ public class NotificationsFragment extends Fragment {
         adapterNotifications.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getNotificationList().size()-1);
     }
 
+    /**
+     * Subscribes to the topic defined in the argument
+     * @param subscriptionTopic
+     */
     public void subscribeToTopic(String subscriptionTopic) {
         try {
 
@@ -176,16 +180,19 @@ public class NotificationsFragment extends Fragment {
         tracker = new SelectionTracker.Builder<>(
                 "my-selection-id",
                 mRecyclerView,
-                new MyItemKeyProvider(ItemKeyProvider.SCOPE_MAPPED),
+                new MyItemKeyProviderNotifications(ItemKeyProvider.SCOPE_MAPPED),
 //                new StableIdKeyProvider(recyclerView), // This caused the app to crash on long clicks
-                new MyItemDetailsLookup(mRecyclerView),
+                new MyItemDetailsLookupNotifications(mRecyclerView),
                 StorageStrategy.createLongStorage())
                 .withOnItemActivatedListener(onItemActivatedListener)
                 .build();
         adapterNotifications.setSelectionTracker(tracker);
     }
-    private void loadMQTT(){
 
+    /**
+     * Connects to the MQTT broker declared in serverUri variable.
+     */
+    private void loadMQTT(){
         clientId = clientId + System.currentTimeMillis();
 
         mqttAndroidClient = new MqttAndroidClient(getContext(), serverUri, clientId);
@@ -229,7 +236,6 @@ public class NotificationsFragment extends Fragment {
         mqttConnectOptions.setCleanSession(true);
         //mqttConnectOptions.setWill(publishTopic,"disconnected".getBytes(),1,true);
 
-        //addToHistory("ConnLocalBroadcastManagerecting to " + serverUri + "...");
         try {
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
@@ -261,6 +267,9 @@ public class NotificationsFragment extends Fragment {
             showMessageSnack(e.toString());
         }
     }
+    /**
+     * Creates an Observer to notify when sport centers are downloaded
+     */
     private void loadSportCenters(){
         final AsyncManager asyncManager = new ViewModelProvider(this).get(AsyncManager.class);
         //Observer
@@ -270,8 +279,6 @@ public class NotificationsFragment extends Fragment {
                 //Update UI elements
                 Log.d("NotificationFargment", "Message Received with size = " + sportCenterList.size());
                 adapterNotifications.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getFavouriteList().size());
-                /*if(binding!=null)
-                    binding.messageInfoFavourites.setText("");*/
             }
         };
         //Create the observation with the previous observers:

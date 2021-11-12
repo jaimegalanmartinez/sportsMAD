@@ -16,7 +16,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-/**
+/**     AndroidManifest.xml:
+ *         <service android:name="org.eclipse.paho.android.service.MqttService"/>
+ *         <service android:name=".service.StepsService"
+ *             android:enabled="true"
+ *             android:exported="false"/>
+ *         <receiver android:name=".service.Receiver"/>
  * Due to lack of time we could not add the service, we tried to add it to count the steps in the background.
  */
 public class StepsService extends Service implements SensorEventListener {

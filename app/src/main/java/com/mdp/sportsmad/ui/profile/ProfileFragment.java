@@ -37,7 +37,9 @@ import com.mdp.sportsmad.model.UserProfile;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import org.jetbrains.annotations.NotNull;
-
+/**
+ * Corresponds to the Profile tab
+ */
 public class ProfileFragment extends Fragment implements SensorEventListener {
 
     private ProfileViewModel profileViewModel;

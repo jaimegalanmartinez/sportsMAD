@@ -1,5 +1,8 @@
 package com.mdp.sportsmad.model;
 
+/**
+ * Class describing the contents of a sport center notification
+ */
 public class SportCenterNotification {
     private int id;
     private String title;
