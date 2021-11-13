@@ -60,7 +60,7 @@ public class NotificationsFragment extends Fragment {
     MqttAndroidClient mqttAndroidClient;
     String clientId = "ExampleAndroidClient";
     String fileNameDefaultSharedPreferences = "not_preferences";
-    String separator ="gsmebkhzvd";
+    String separator ="gsmebkhzvd";//Used to concatenate notifications in a same string in SharedPreferences
     private SelectionTracker tracker;
     private MyAdapterNotifications adapterNotifications;
     private MyOnItemActivatedListenerNotifications onItemActivatedListener;
@@ -98,8 +98,8 @@ public class NotificationsFragment extends Fragment {
             }
         }
         SportCenterDataset.getInstance().setNotificationList(notificationList);
-
-        loadRecyclerView();//Loads UI of recycler view
+        //Load UI of recycler view
+        loadRecyclerView();
         //Buttons
         Button clearAllButton = binding.clearAll;
         clearAllButton.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +108,7 @@ public class NotificationsFragment extends Fragment {
                 deleteAllSelection();
             }
         });
-        //If sport centers are not loaded, it lanches a observer to uptade the UI when they are downloaded.
+        //If sport centers are not loaded, it launches a observer to update the UI when they are downloaded.
         if(SportCenterDataset.getInstance().isFilled()==false)
             loadSportCenters();
 
@@ -161,7 +161,7 @@ public class NotificationsFragment extends Fragment {
     }
 
     /**
-     * Adds to list a new notification
+     * Adds to list a new notification and also stores it in SharedPreferences
      * @param sportCenterNotification notification to add
      */
     private void addToHistory(SportCenterNotification sportCenterNotification) {

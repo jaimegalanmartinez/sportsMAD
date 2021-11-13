@@ -63,18 +63,17 @@ public class FavoritesFragment extends Fragment {
         if(SportCenterDataset.getInstance().isFilled()==false)//If sport centers not downloaded, create Observer
             loadSportCenters();
         else {
+            //If thy are loaded, show only favourites
             binding.messageInfoFavourites.setText("");
             List<SportCenter> favouriteList =SportCenterDataset.getInstance().getFavouriteList();
-
             favouriteList.clear();
             SharedPreferences sp = getContext().getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
-            //SharedPreferences.Editor editor = sp.edit();
             String favouritesString = sp.getString("StringFavourites","");
             if(favouritesString!="") {
-                String favouritesSep[] = favouritesString.split("/");
+                String favouritesSep[] = favouritesString.split("/");//Separator to concatenate id of favourite sport centers in a same string in SharedPreferences
                 for (String id : favouritesSep)
                     if(!id.equals(""))
-                        favouriteList.add(SportCenterDataset.getInstance().findSPById(id));
+                        favouriteList.add(SportCenterDataset.getInstance().findSPById(id));//Add favourite to list
 
             }
         }
@@ -137,7 +136,7 @@ public class FavoritesFragment extends Fragment {
         final Observer progressObserver = new Observer<List<SportCenter>>(){
             @Override
             public void onChanged(List<SportCenter> sportCenterList){
-                //Update UI elements
+                //Read from SharedPreferences teh favourites stored
                 Log.d(logTag, "Message Received with size = " + sportCenterList.size());
                 List<SportCenter> favouriteList =SportCenterDataset.getInstance().getFavouriteList();
                 SharedPreferences sp = getContext().getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
@@ -150,6 +149,7 @@ public class FavoritesFragment extends Fragment {
                             favouriteList.add(SportCenterDataset.getInstance().findSPById(id));
 
                 }
+                //Update UI elements
                 recyclerViewAdapter.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getFavouriteList().size());
                 if(binding!=null)
                     binding.messageInfoFavourites.setText("");

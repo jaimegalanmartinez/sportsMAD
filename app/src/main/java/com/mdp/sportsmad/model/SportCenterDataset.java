@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Stores the sport centers downloaded in list and can store and load from SharedPreferences
+ * Stores the sport centers downloaded in a list,
  * the favourites sport centers and notifications.
  * In addition, it can add favourite or notification and remove them.
  */
@@ -41,7 +41,8 @@ public class SportCenterDataset {
     }
 
     /**
-     * Creates an instance on this class and configures the getSharedPreferences store option.
+     * Creates an instance on this class and configures the getSharedPreferences store option
+     * (SharedPreferences is NO longer USED in this class)
      * @param c context of the application
      * @param viewModelStore
      * @return returns the instance created
@@ -78,19 +79,6 @@ public class SportCenterDataset {
     }
 
     /**
-     * Reloads from disk the favouriteList.
-     * This is executed after loading generalList.
-     */
-    public void updateFavourites(){
-
-        /*favouriteList.clear();
-        Set<String> favouritesSet = sharedPreferences.getStringSet("favourites",new HashSet<>());
-        for(String id:favouritesSet)
-            favouriteList.add(findSPById(id));
-
-         */
-    }
-    /**
      * Updates the favouriteList to a new one
      * @param favouriteListnew new favouriteList to save
      */
@@ -112,16 +100,10 @@ public class SportCenterDataset {
     }
 
     /**
-     * Deletes a sport center in favouriteList and in disk.
+     * Deletes a sport center in favouriteList
      * @param id identifier to remove that sport center
      */
     public void removeFavourite(int id) {
-        /*SharedPreferences.Editor editor = sharedPreferences.edit();
-        Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
-        favouritesSet.remove(Integer.toString(id));
-        editor.putStringSet("favourites",favouritesSet);
-        editor.apply();
-*/
         SportCenter toRemove=null;
         for(SportCenter sp1: favouriteList){
             if(sp1.getId()==id){
@@ -152,7 +134,7 @@ public class SportCenterDataset {
     }
 
     /**
-     * Return true if the spirt center identified with its id is favourite
+     * Return true if the sport center identified with its id is favourite
      * @param id of the sport center to search
      * @return true if it is favourite
      */
@@ -174,7 +156,7 @@ public class SportCenterDataset {
         favouriteList.clear();
     }
     /**
-     * Deletes all favourites selected in the list and in disk.
+     * Deletes all favourites selected in the list
      * Only for debug purposes.
      */
     public void removeAllFavourites(){
@@ -182,7 +164,7 @@ public class SportCenterDataset {
 
     }
     /**
-     * Adds a sport center in favouriteList and in disk.
+     * Adds a sport center in favouriteList
      * @param sportCenterNotification to add
      */
     public void addNotification(SportCenterNotification sportCenterNotification){
