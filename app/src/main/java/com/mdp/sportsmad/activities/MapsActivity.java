@@ -1,7 +1,6 @@
 package com.mdp.sportsmad.activities;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -45,7 +44,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         binding = ActivityMapsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         //Get sportCenter
-        Intent i = getIntent();
         Gson gson = new Gson();
         sportCenter = gson.fromJson(getIntent().getStringExtra("sportCenter"), SportCenter.class);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -96,8 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Start the load of the user location
-     * If it the permission is granted, then returns true, else false and a dialog to request the permission is needed
-     * @return
+     * @return If it the permission is granted, then returns true, else false and a dialog to request the permission is needed
      */
     private boolean startLocationCallBack(){
         if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {

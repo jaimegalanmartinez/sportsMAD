@@ -43,9 +43,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Corresponds to the Notifications tab
@@ -89,7 +87,7 @@ public class NotificationsFragment extends Fragment {
         /*favouritesAll="";
         editor.putString("notifications",favouritesAll);
         editor.apply();*/
-        String favouritesSep []=favouritesAll.split(separator);
+        String[] favouritesSep =favouritesAll.split(separator);
         List<SportCenterNotification> notificationList= new ArrayList<>();
         Gson gson =new Gson();
         for (String s: favouritesSep){
@@ -112,8 +110,8 @@ public class NotificationsFragment extends Fragment {
         if(SportCenterDataset.getInstance().isFilled()==false)
             loadSportCenters();
 
-        editBroker = (EditText) binding.editBroker;
-        save_broker = (Button) binding.saveBroker;
+        editBroker = binding.editBroker; //EditText
+        save_broker = binding.saveBroker; //Button
         save_broker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {//Save broker address on SharedPreferences

@@ -10,7 +10,6 @@ import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mdp.sportsmad.R;
-import com.mdp.sportsmad.model.SportCenter;
 import com.mdp.sportsmad.model.SportCenterNotification;
 
 import java.util.List;

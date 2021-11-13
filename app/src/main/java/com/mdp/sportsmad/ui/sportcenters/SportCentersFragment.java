@@ -56,7 +56,7 @@ public class SportCentersFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Log.d("SportCentersFragment","reached onViewCreated()");
         loadRecyclerView();//Loads UI of recycler view
-        if(SportCenterDataset.getInstance().isFilled()==false)
+        if(!SportCenterDataset.getInstance().isFilled())
             loadSportCenters();
         else
             binding.messageInfo.setText("");

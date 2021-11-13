@@ -29,8 +29,6 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public class SportCenterDetailsActivity extends AppCompatActivity {
     private SportCenter sportCenter;
@@ -157,10 +155,9 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
     }
     private void loadUI(){
 
-        title= (TextView) findViewById(R.id.name);
+        title= findViewById(R.id.name); //TextView
         title.setText(sportCenter.getTitle());
-        type= (TextView) findViewById(R.id.type_details);
-        //type.setText(sportCenter.getType());
+        type= findViewById(R.id.type_details); //TextView
 
         switch (sportCenter.getType()) {
             case "Piscinas":
@@ -187,7 +184,7 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
             default:
                 type.setText("Gym");
         }
-        urlRelation= (Button) findViewById(R.id.url_link_details);
+        urlRelation = findViewById(R.id.url_link_details); //button
         urlRelation.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -195,9 +192,9 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-        street= (TextView) findViewById(R.id.street_detail);
+        street= findViewById(R.id.street_detail); //TextView
         street.setText(sportCenter.getStreet());
-        latLng= (Button) findViewById(R.id.button_location);
+        latLng= findViewById(R.id.button_location); //Button
         latLng.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -209,12 +206,12 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
 
             }
         });
-        schedule= (TextView) findViewById(R.id.schedule);
+        schedule= findViewById(R.id.schedule); //TextView
         schedule.setText(sportCenter.getSchedule());
-        services= (TextView) findViewById(R.id.services);
+        services= findViewById(R.id.services); //TextView
         services.setText(sportCenter.getServices());
 
-        favorite = (CheckBox) findViewById(R.id.favorite_details);
+        favorite = findViewById(R.id.favorite_details); //Checkbox
         //If it is favourite, set checkbox
         if(SportCenterDataset.getInstance().isFavourite(sportCenter.getId())){
             favorite.setChecked(true);
@@ -226,7 +223,7 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
                     SharedPreferences sp = cw.getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
                     String favouritesString = sp.getString("StringFavourites","");
-                    String favouritesSep []=favouritesString.split("/");
+                    String[] favouritesSep =favouritesString.split("/");
                     favouritesString=favouritesString+"/"+sportCenter.getId();
 
                     editor.putString("StringFavourites", favouritesString);
@@ -239,7 +236,7 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
                     SharedPreferences sp = cw.getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
                     String favouritesString =sp.getString("StringFavourites","");
-                    String favouritesSep []=favouritesString.split("/");
+                    String[] favouritesSep =favouritesString.split("/");
                     favouritesString="";
                     for(String sp1:  favouritesSep) {
                         if(!Integer.toString(sportCenter.getId()).equals(sp1))
@@ -254,16 +251,15 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
 
             }
         });
-        commentary = (TextView)  findViewById(R.id.comment_edit);
+        commentary = findViewById(R.id.comment_edit); //TextView
 
-        button_send = (Button) findViewById(R.id.button_send);
+        button_send = findViewById(R.id.button_send); //Button
         button_send.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if(serverUri.equals(""))
                     showMessageSnack("Please, fill the address of the MQTT server. (tcp:x.x.x.x:1883)");
                 else {
-                    //loadMQTT();
                     publishMessage(publishTopic + sportCenter.getId(), commentary.getText().toString());
                 }
             }

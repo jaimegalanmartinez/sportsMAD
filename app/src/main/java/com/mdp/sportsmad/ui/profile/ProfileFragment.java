@@ -60,11 +60,12 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         maxSteps = 300;
         //Circular progress bar
+        //Set max steps and progress bar direction
         binding.profileUserStepsMax.setText(getString(R.string.steps_count_max,maxSteps));
         binding.profileCircularProgressBarSteps.setProgressDirection(CircularProgressBar.ProgressDirection.TO_RIGHT);
         binding.profileCircularProgressBarSteps.setProgressMax((float)maxSteps);
         View root = binding.getRoot();
-
+        //Detect if the device supports the step sensor
         if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_SENSOR_STEP_DETECTOR)) {
             Log.d("Hardware supported:", "Step detector sensor supported");
         }
@@ -103,7 +104,7 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
 
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) {
-            //ask for permission
+            //Ask for permission
             //If sdk device version >= android 10
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 requestPermissionLauncher.launch((Manifest.permission.ACTIVITY_RECOGNITION));
@@ -146,7 +147,7 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
                 return false;
             }
         });
-
+        //To receive the userProfile data object when the user submits his information in the ProfileDataActivity
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -266,6 +267,7 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
             if(userProfile != null){
                 userProfile.setSteps(stepCount);
                 if(binding!=null) {
+                    //Set steps count in UI (TextView and Progress Bar)
                     binding.profileUserStepsValue.setText(String.valueOf(userProfile.getSteps()));
                     binding.profileCircularProgressBarSteps.setProgressWithAnimation((float) userProfile.getSteps());
                 }

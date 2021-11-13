@@ -24,11 +24,15 @@ import com.mdp.sportsmad.model.SportCenterDataset;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * SportsMAD application
+ * @author Jaime Galan Martinez, Victor Aranda Lopez
+ */
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private String CONTENT_TYPE_JSON = "application/json";
-    private String URL_JSON = "https://datos.madrid.es/egob/catalogo/200186-0-polideportivos.json";
+    private final String CONTENT_TYPE_JSON = "application/json";
+    private final String URL_JSON = "https://datos.madrid.es/egob/catalogo/200186-0-polideportivos.json";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
         SportCenterDataset.createInstance(this,this);//Initialize
 
-        if(SportCenterDataset.getInstance().isFilled()==false)
+        if(!SportCenterDataset.getInstance().isFilled())
             loadSportCenters();
     }
     private void loadSportCenters(){

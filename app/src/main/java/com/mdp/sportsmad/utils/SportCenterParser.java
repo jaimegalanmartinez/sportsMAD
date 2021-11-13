@@ -39,7 +39,7 @@ public class SportCenterParser {
                 String street="";
                 if(graph.getJSONObject("address").has("street-address"))
                     street = graph.getJSONObject("address").getString("street-address");
-                //if(graph.getJSONObject("location").has("street-address"))
+
                 LatLng latLng = new LatLng(graph.getJSONObject("location").getDouble("latitude"),graph.getJSONObject("location").getDouble("longitude"));
                 String schedule = graph.getJSONObject("organization").getString("schedule");
                 String services = graph.getJSONObject("organization").getString("services");

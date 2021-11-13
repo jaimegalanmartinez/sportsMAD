@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.mdp.sportsmad.ui.sportcenters.MyViewHolder;
 
 public final class MyItemDetailsLookupFavourites extends ItemDetailsLookup<Long> {
 

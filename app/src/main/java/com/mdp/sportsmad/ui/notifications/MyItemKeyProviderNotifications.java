@@ -30,7 +30,7 @@ public class MyItemKeyProviderNotifications extends ItemKeyProvider<Long> {
     @Override
     public Long getKey(int position) {
         Log.d(TAG, "getKey() called");
-        return Long.valueOf((long)(position));
+        return Long.valueOf(position);
     }
 
     @SuppressLint("LongLogTag")

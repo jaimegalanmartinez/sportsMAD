@@ -2,7 +2,6 @@ package com.mdp.sportsmad.ui.favorites;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,11 +28,8 @@ import com.mdp.sportsmad.databinding.FragmentFavoritesBinding;
 import com.mdp.sportsmad.model.SportCenter;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 /**
  * Corresponds to the Favourite tab
@@ -70,7 +66,7 @@ public class FavoritesFragment extends Fragment {
             SharedPreferences sp = getContext().getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
             String favouritesString = sp.getString("StringFavourites","");
             if(favouritesString!="") {
-                String favouritesSep[] = favouritesString.split("/");//Separator to concatenate id of favourite sport centers in a same string in SharedPreferences
+                String[] favouritesSep = favouritesString.split("/");//Separator to concatenate id of favourite sport centers in a same string in SharedPreferences
                 for (String id : favouritesSep)
                     if(!id.equals(""))
                         favouriteList.add(SportCenterDataset.getInstance().findSPById(id));//Add favourite to list
@@ -84,18 +80,6 @@ public class FavoritesFragment extends Fragment {
         super.onResume();
         //Reload the dataset
         recyclerViewAdapter.notifyDataSetChanged();
-        /*List<SportCenter> FavouriteList = SportCenterDataset.getInstance().getFavouriteList();
-
-        List<SportCenter> FavouriteListCopy= new ArrayList<SportCenter> ();//Create a copy
-        for (SportCenter sp: FavouriteList)
-            FavouriteListCopy.add(sp);
-        int FavouriteList_size=FavouriteList.size();
-        //reset the previous dataset
-        SportCenterDataset.getInstance().resetFavourites();
-        recyclerViewAdapter.notifyItemRangeRemoved(0,FavouriteList_size+1);
-        //Update totally to the new one
-        SportCenterDataset.getInstance().setFavouriteList(FavouriteListCopy);
-        recyclerViewAdapter.notifyItemRangeChanged(0,FavouriteListCopy.size());*/
     }
     @Override
     public void onDestroyView() {
@@ -104,7 +88,6 @@ public class FavoritesFragment extends Fragment {
     }
     private void loadRecyclerView(){
         Log.d("FavoritesFragment","reached loadRecyclerView()");
-        //recyclerView = findViewById(R.id.recyclerView);
         recyclerView = binding.recyclerViewFavourites;
 
         recyclerViewAdapter = new MyAdapterFavorites(getContext(), SportCenterDataset.getInstance().getFavouriteList());
@@ -143,7 +126,7 @@ public class FavoritesFragment extends Fragment {
 
                 String favouritesString = sp.getString("StringFavourites","");
                 if(favouritesString!="") {
-                    String favouritesSep[] = favouritesString.split("/");
+                    String[] favouritesSep = favouritesString.split("/");
                     for (String id : favouritesSep)
                         if(!id.equals(""))
                             favouriteList.add(SportCenterDataset.getInstance().findSPById(id));

@@ -30,22 +30,53 @@ public class UserProfile implements Serializable {
 
     }
 
+    /**
+     * Calculates the user's BMI
+     */
     private void calculateBMI(){
         this.BMI = weight / ((this.height/100f)*(this.height/100f));
     }
 
+    /**
+     * Get the user's name
+     * @return name
+     */
     public String getName() { return name; }
 
+    /**
+     * Get the user's age
+     * @return age
+     */
     public int getAge() { return age; }
 
+    /**
+     * Get the user's height
+     * @return height in cm
+     */
     public int getHeight() { return height; }
 
+    /**
+     * Get the user's weight
+     * @return weight in kg
+     */
     public float getWeight() { return weight; }
 
+    /**
+     * Get the user's gender
+     * @return gender (male, female)
+     */
     public Gender getGender() { return gender; }
 
+    /**
+     * Get the user's BMI (Body Mass Index)
+     * @return BMI
+     */
     public float getBMI() { return BMI; }
 
+    /**
+     * Get the user's steps
+     * @return steps number
+     */
     public int getSteps() { return steps; }
 
     private void calculateCaloriesBurned(float speedFactor){
@@ -53,6 +84,9 @@ public class UserProfile implements Serializable {
         this.caloriesBurned = this.steps * 0.04f * this.BMI * this.age * speedFactor;
     }
 
+    /**
+     * Set the user's steps
+     */
     public void setSteps(int steps) {
         this.steps = steps;
     }
