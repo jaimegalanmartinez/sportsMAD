@@ -1,5 +1,7 @@
 package com.mdp.sportsmad.ui.notifications;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.mdp.sportsmad.utils.AsyncManager;
 import com.mdp.sportsmad.utils.CheckerRunnable;
 import com.mdp.sportsmad.databinding.FragmentNotificationsBinding;
@@ -39,7 +42,11 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 /**
  * Corresponds to the Notifications tab
  */
@@ -48,11 +55,12 @@ public class NotificationsFragment extends Fragment {
     private FragmentNotificationsBinding binding;
     private EditText editBroker;
     private Button save_broker;
-    String serverUri = "tcp://192.168.1.29:1883";
+    String serverUri = "tcp://x.x.x.x:1883";
     final String subscriptionTopic = "notifications/";
     MqttAndroidClient mqttAndroidClient;
     String clientId = "ExampleAndroidClient";
-
+    String fileNameDefaultSharedPreferences = "not_preferences";
+    String separator ="gsmebkhzvd";
     private SelectionTracker tracker;
     private MyAdapterNotifications adapterNotifications;
     private MyOnItemActivatedListenerNotifications onItemActivatedListener;
@@ -74,6 +82,23 @@ public class NotificationsFragment extends Fragment {
         if(!serverUri.equals(""))
             loadMQTT();//If something is stored, then try to connect
 
+        //load previous notifications
+        SharedPreferences spnot = getContext().getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        String favouritesAll =spnot.getString("notifications","");
+        /*favouritesAll="";
+        editor.putString("notifications",favouritesAll);
+        editor.apply();*/
+        String favouritesSep []=favouritesAll.split(separator);
+        List<SportCenterNotification> notificationList= new ArrayList<>();
+        Gson gson =new Gson();
+        for (String s: favouritesSep){
+            if(!s.equals("") && s.charAt(0)=='{'){
+                notificationList.add((SportCenterNotification)gson.fromJson(s,SportCenterNotification.class));
+            }
+        }
+        SportCenterDataset.getInstance().setNotificationList(notificationList);
+
         loadRecyclerView();//Loads UI of recycler view
         //Buttons
         Button clearAllButton = binding.clearAll;
@@ -94,7 +119,7 @@ public class NotificationsFragment extends Fragment {
             public void onClick(View view) {//Save broker address on SharedPreferences
                 serverUri=editBroker.getText().toString();
                 if(serverUri.equals("")){
-                    showMessageSnack("Please, fill the address of the MQTT server. (tcp:x.x.x.x:1883)");
+                    showMessageSnack("Please, fill the address of the MQTT server. (tcp://x.x.x.x:1883)");
                     SharedPreferences sp = getContext().getSharedPreferences("favourites", getContext().MODE_PRIVATE);
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString("broker", serverUri);
@@ -109,6 +134,7 @@ public class NotificationsFragment extends Fragment {
                 }
             }
         });
+
     }
     @Override
     public void onDestroyView() {
@@ -140,7 +166,15 @@ public class NotificationsFragment extends Fragment {
      */
     private void addToHistory(SportCenterNotification sportCenterNotification) {
         System.out.println("LOG: " + sportCenterNotification);
+        SharedPreferences sp = getContext().getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        String favouritesAll =sp.getString("notifications","");
+        Gson gson =new Gson();
+        favouritesAll=favouritesAll+separator+gson.toJson(sportCenterNotification);
+        editor.putString("notifications",favouritesAll);
+        editor.apply();
         SportCenterDataset.getInstance().addNotification(sportCenterNotification);
+
         adapterNotifications.notifyDataSetChanged();
         adapterNotifications.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getNotificationList().size()-1);
     }
@@ -280,6 +314,7 @@ public class NotificationsFragment extends Fragment {
             public void onChanged(List<SportCenter> sportCenterList){
                 //Update UI elements
                 Log.d("NotificationFargment", "Message Received with size = " + sportCenterList.size());
+
                 adapterNotifications.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getFavouriteList().size());
             }
         };
@@ -288,6 +323,12 @@ public class NotificationsFragment extends Fragment {
         asyncManager.launchBackgroundTask(new CheckerRunnable());
     }
     public void deleteAllSelection() {
+        SharedPreferences sp = getContext().getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        String favouritesAll="";
+        editor.putString("notifications",favouritesAll);
+        editor.apply();
+
         SportCenterDataset spd = SportCenterDataset.getInstance();
         int size = spd.getNotificationList().size();
         spd.removeNotificationList();

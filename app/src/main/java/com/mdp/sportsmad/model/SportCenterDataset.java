@@ -70,7 +70,7 @@ public class SportCenterDataset {
         this.generalList.clear();
         for(SportCenter sp: generalListnew)
             this.generalList.add(sp);
-        updateFavourites();
+        //updateFavourites();
         filled=true;
         //Notify that lists are loaded
         final AsyncManager asyncManager = new ViewModelProvider(vm).get(AsyncManager.class);
@@ -83,10 +83,12 @@ public class SportCenterDataset {
      */
     public void updateFavourites(){
 
-        favouriteList.clear();
+        /*favouriteList.clear();
         Set<String> favouritesSet = sharedPreferences.getStringSet("favourites",new HashSet<>());
         for(String id:favouritesSet)
             favouriteList.add(findSPById(id));
+
+         */
     }
     /**
      * Updates the favouriteList to a new one
@@ -105,11 +107,7 @@ public class SportCenterDataset {
      * @param sportCenter to add
      */
     public void addFavourite(SportCenter sportCenter){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
-        favouritesSet.add(Integer.toString(sportCenter.getId()));
-        editor.putStringSet("favourites",favouritesSet);
-        editor.apply();
+
         favouriteList.add(sportCenter);
     }
 
@@ -118,12 +116,12 @@ public class SportCenterDataset {
      * @param id identifier to remove that sport center
      */
     public void removeFavourite(int id) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        /*SharedPreferences.Editor editor = sharedPreferences.edit();
         Set<String> favouritesSet =sharedPreferences.getStringSet("favourites",new HashSet<>());
         favouritesSet.remove(Integer.toString(id));
         editor.putStringSet("favourites",favouritesSet);
         editor.apply();
-
+*/
         SportCenter toRemove=null;
         for(SportCenter sp1: favouriteList){
             if(sp1.getId()==id){
@@ -181,46 +179,18 @@ public class SportCenterDataset {
      */
     public void removeAllFavourites(){
         favouriteList.clear();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet("favourites",new HashSet<>() );
-        editor.apply();
+
     }
     /**
      * Adds a sport center in favouriteList and in disk.
      * @param sportCenterNotification to add
      */
     public void addNotification(SportCenterNotification sportCenterNotification){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Set<String> favouritesSet =sharedPreferences.getStringSet("notifications",new HashSet<>());
-        Gson gson =new Gson();
-        favouritesSet.add(gson.toJson(sportCenterNotification));
-        editor.putStringSet("notifications",favouritesSet);
-        editor.apply();
+
         notificationList.add(sportCenterNotification);
     }
 
-    /**
-     * Deletes a sport center in favouriteList and in disk.
-     * @param id identifier to remove that sport center
-     */
-    public void removeNotification(int id) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Set<String> notificationsSet =sharedPreferences.getStringSet("notifications",new HashSet<>());
-        Gson gson =new Gson();
-        SportCenterNotification toRemove=null;
-        for(String i: notificationsSet){
-            SportCenterNotification temp = gson.fromJson(i,SportCenterNotification.class);
-            if(temp.getId()==id)
-                toRemove=temp;
-        }
-        if(toRemove!=null) {
-            notificationsSet.remove(gson.toJson(toRemove));
-            editor.putStringSet("notifications", notificationsSet);
-            editor.apply();
 
-            notificationList.remove(toRemove);
-        }
-    }
     /**
      * Obtain a sport center notification by its id.
      */
@@ -242,11 +212,12 @@ public class SportCenterDataset {
      */
     public void removeNotificationList(){
         notificationList.clear();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet("notifications",new HashSet<>() );
-        editor.apply();
+
     }
     public boolean isFilled(){
         return filled;
+    }
+    public void setNotificationList(List<SportCenterNotification> l){
+        this.notificationList=l;
     }
 }

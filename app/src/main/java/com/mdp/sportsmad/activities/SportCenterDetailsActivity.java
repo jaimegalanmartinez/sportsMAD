@@ -1,5 +1,6 @@
 package com.mdp.sportsmad.activities;
 
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -28,6 +29,9 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class SportCenterDetailsActivity extends AppCompatActivity {
     private SportCenter sportCenter;
     private TextView title;
@@ -45,7 +49,8 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
     String serverUri = "tcp://192.168.1.29:1883";
     MqttAndroidClient mqttAndroidClient;
     String clientId = "ExampleAndroidClient";
-
+    String fileNameDefaultSharedPreferences = "fav_preferences";
+    private ContextWrapper cw;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +60,7 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
         sportCenter = gson.fromJson(getIntent().getStringExtra("sportCenter"), SportCenter.class);
         loadUI();
         loadBrokerMQTT();
-
+        cw =this;
 
         if(!serverUri.equals(""))
             loadMQTT();
@@ -93,7 +98,6 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
 
             }
         });
-
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(true);
@@ -219,10 +223,30 @@ public class SportCenterDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(favorite.isChecked()){
-                    //Save this sport center as favourite
+                    SharedPreferences sp = cw.getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    String favouritesString = sp.getString("StringFavourites","");
+                    String favouritesSep []=favouritesString.split("/");
+                    favouritesString=favouritesString+"/"+sportCenter.getId();
+
+                    editor.putString("StringFavourites", favouritesString);
+                    editor.apply();
+
                     SportCenterDataset spdataset = SportCenterDataset.getInstance();
                     spdataset.addFavourite(sportCenter);
                 }else{
+
+                    SharedPreferences sp = cw.getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    String favouritesString =sp.getString("StringFavourites","");
+                    String favouritesSep []=favouritesString.split("/");
+                    favouritesString="";
+                    for(String sp1:  favouritesSep) {
+                        if(!Integer.toString(sportCenter.getId()).equals(sp1))
+                            favouritesString=favouritesString+"/"+sp1;
+                    }
+                    editor.putString("StringFavourites",favouritesString);
+                    editor.apply();
 
                     SportCenterDataset spdataset = SportCenterDataset.getInstance();
                     spdataset.removeFavourite(sportCenter.getId());

@@ -271,9 +271,7 @@ public class ProfileFragment extends Fragment implements SensorEventListener {
                 }
                 Log.d("STEPSCOUNT:",stepCount + " "+userProfile.getSteps());
             }
-
         }
-
     }
 
     @Override

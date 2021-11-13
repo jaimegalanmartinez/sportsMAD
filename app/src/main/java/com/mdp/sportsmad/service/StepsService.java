@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 /**     AndroidManifest.xml:
- *         <service android:name="org.eclipse.paho.android.service.MqttService"/>
+ *
  *         <service android:name=".service.StepsService"
  *             android:enabled="true"
  *             android:exported="false"/>

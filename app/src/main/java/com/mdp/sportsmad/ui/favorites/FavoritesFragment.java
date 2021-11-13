@@ -1,5 +1,9 @@
 package com.mdp.sportsmad.ui.favorites;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +31,9 @@ import com.mdp.sportsmad.model.SportCenter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Corresponds to the Favourite tab
@@ -39,7 +45,7 @@ public class FavoritesFragment extends Fragment {
     private RecyclerView recyclerView;
     private MyAdapterFavorites recyclerViewAdapter;
     private SelectionTracker tracker;
-
+    String fileNameDefaultSharedPreferences = "fav_preferences";
     private MyOnItemActivatedListenerFavourites onItemActivatedListenerFavourites;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -56,8 +62,22 @@ public class FavoritesFragment extends Fragment {
         loadRecyclerView();//Loads UI of recycler view
         if(SportCenterDataset.getInstance().isFilled()==false)//If sport centers not downloaded, create Observer
             loadSportCenters();
-        else
+        else {
             binding.messageInfoFavourites.setText("");
+            List<SportCenter> favouriteList =SportCenterDataset.getInstance().getFavouriteList();
+
+            favouriteList.clear();
+            SharedPreferences sp = getContext().getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
+            //SharedPreferences.Editor editor = sp.edit();
+            String favouritesString = sp.getString("StringFavourites","");
+            if(favouritesString!="") {
+                String favouritesSep[] = favouritesString.split("/");
+                for (String id : favouritesSep)
+                    if(!id.equals(""))
+                        favouriteList.add(SportCenterDataset.getInstance().findSPById(id));
+
+            }
+        }
     }
     @Override
     public void onResume() {
@@ -117,6 +137,17 @@ public class FavoritesFragment extends Fragment {
             public void onChanged(List<SportCenter> sportCenterList){
                 //Update UI elements
                 Log.d(logTag, "Message Received with size = " + sportCenterList.size());
+                List<SportCenter> favouriteList =SportCenterDataset.getInstance().getFavouriteList();
+                SharedPreferences sp = getContext().getSharedPreferences(fileNameDefaultSharedPreferences, MODE_PRIVATE);
+
+                String favouritesString = sp.getString("StringFavourites","");
+                if(favouritesString!="") {
+                    String favouritesSep[] = favouritesString.split("/");
+                    for (String id : favouritesSep)
+                        if(!id.equals(""))
+                            favouriteList.add(SportCenterDataset.getInstance().findSPById(id));
+
+                }
                 recyclerViewAdapter.notifyItemRangeChanged(0,SportCenterDataset.getInstance().getFavouriteList().size());
                 if(binding!=null)
                     binding.messageInfoFavourites.setText("");
