@@ -84,7 +84,9 @@ public class FavoritesFragment extends Fragment {
         Log.d("FavoritesFragment","reached onResume()");
         super.onResume();
         //Reload the dataset
-        List<SportCenter> FavouriteList = SportCenterDataset.getInstance().getFavouriteList();
+        recyclerViewAdapter.notifyDataSetChanged();
+        /*List<SportCenter> FavouriteList = SportCenterDataset.getInstance().getFavouriteList();
+
         List<SportCenter> FavouriteListCopy= new ArrayList<SportCenter> ();//Create a copy
         for (SportCenter sp: FavouriteList)
             FavouriteListCopy.add(sp);
@@ -94,7 +96,7 @@ public class FavoritesFragment extends Fragment {
         recyclerViewAdapter.notifyItemRangeRemoved(0,FavouriteList_size+1);
         //Update totally to the new one
         SportCenterDataset.getInstance().setFavouriteList(FavouriteListCopy);
-        recyclerViewAdapter.notifyItemRangeChanged(0,FavouriteListCopy.size());
+        recyclerViewAdapter.notifyItemRangeChanged(0,FavouriteListCopy.size());*/
     }
     @Override
     public void onDestroyView() {
